@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>八字 · Reyhan</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#06060e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BaziReyhan">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#06060e;--surface:#0f0f22;--s2:#151530;--s3:#1a1a3a;
+      --border:#1c1c38;--b2:#26264a;
+      --gold:#c8953a;--gh:#e8c060;--gl:#6a4a10;
+      --text:#ddd5c0;--dim:#7a7060;--dim2:#5a5050;
+      --teal:#28a09a;--red:#c03838;
+      --wc:#5ac85a;--wb:rgba(30,70,30,.3);--wbd:#3c7a3c;
+      --fc:#e06040;--fb:rgba(90,30,10,.3);--fbd:#c05030;
+      --ec:#c89040;--eb:rgba(60,44,10,.3);--ebd:#b08030;
+      --mc:#b0b0cc;--mb:rgba(55,55,75,.3);--mbd:#9090b0;
+      --ac:#4898e0;--ab:rgba(18,50,100,.3);--abd:#3878c8;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{height:100%;font-family:'EB Garamond',Georgia,serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+    body{background-image:radial-gradient(ellipse 90% 50% at 15% -5%,rgba(120,30,10,.15) 0%,transparent 55%),radial-gradient(ellipse 70% 40% at 85% 105%,rgba(20,80,80,.1) 0%,transparent 55%)}
+    .screen{display:none;flex-direction:column;min-height:100svh}
+    .screen.active{display:flex}
+    .home-top{padding:52px 20px 28px;text-align:center;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(200,149,58,.05),transparent)}
+    .home-date{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.3em;color:var(--gl);text-transform:uppercase;margin-bottom:8px}
+    .home-greet{font-size:24px}.home-greet span{color:var(--gold)}
+    .home-dm{margin-top:7px;font-size:13px;color:var(--dim);font-style:italic}
+    .home-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 20px}
+    .mandala{width:160px;height:160px;margin-bottom:28px}
+    .ring-a{animation:spn 90s linear infinite;transform-origin:80px 80px}
+    .ring-b{animation:spnr 45s linear infinite;transform-origin:80px 80px}
+    @keyframes spn{to{transform:rotate(360deg)}}
+    @keyframes spnr{to{transform:rotate(-360deg)}}
+    .read-btn{width:100%;max-width:300px;background:var(--surface);border:1px solid var(--gl);border-radius:22px;cursor:pointer;overflow:hidden;transition:all .3s;position:relative}
+    .read-btn:active{border-color:var(--gold);box-shadow:0 0 32px rgba(200,149,58,.2);transform:scale(.97)}
+    .btn-main{padding:22px 18px;text-align:center}
+    .btn-ico{font-size:30px;display:block;margin-bottom:9px}
+    .btn-lbl{font-family:'Cinzel',serif;font-size:16px;letter-spacing:.1em;color:var(--gold);display:block}
+    .btn-sub{font-size:13px;color:var(--dim);margin-top:4px;display:block}
+    .btn-lp{border-top:1px solid var(--border);padding:9px 18px;display:flex;justify-content:space-between;align-items:center}
+    .btn-lp span{font-size:11px;color:var(--dim)}.btn-lp strong{font-size:12px;color:var(--gold)}
+    .last-info{margin-top:14px;font-size:12px;color:var(--dim);font-style:italic}
+    .rbar{padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:10}
+    .back{width:36px;height:36px;border-radius:50%;flex-shrink:0;background:var(--s2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;color:var(--dim);transition:all .2s}
+    .back:active{border-color:var(--gl);color:var(--gold)}
+    .rbar-info h2{font-family:'Cinzel',serif;font-size:14px;color:var(--gold)}
+    .rbar-info p{font-size:12px;color:var(--dim)}
+    .rbody{padding:16px;display:flex;flex-direction:column;gap:13px;padding-bottom:48px}
+    .p-hero{background:var(--surface);border:1px solid var(--b2);border-radius:22px;padding:26px 16px;text-align:center;position:relative;overflow:hidden}
+    .p-hero::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:220px;height:220px;background:radial-gradient(circle,rgba(200,149,58,.07),transparent 70%);pointer-events:none}
+    .p-hero-lbl{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.28em;color:var(--dim);text-transform:uppercase;margin-bottom:14px}
+    .p-chars{display:flex;justify-content:center;align-items:flex-end;gap:18px;margin-bottom:10px}
+    .pc .big{font-size:68px;line-height:1;background:linear-gradient(180deg,var(--gh),var(--gold),#5a3808);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .pc .lbl{font-size:11px;color:var(--dim);margin-top:4px}
+    .pc-sep{font-size:36px;color:var(--b2);padding-bottom:14px}
+    .el-pill{display:inline-block;padding:4px 16px;border-radius:20px;font-size:12px;margin:0 3px 8px}
+    .el-wood{background:var(--wb);color:var(--wc);border:1px solid var(--wbd)}
+    .el-fire{background:var(--fb);color:var(--fc);border:1px solid var(--fbd)}
+    .el-earth{background:var(--eb);color:var(--ec);border:1px solid var(--ebd)}
+    .el-metal{background:var(--mb);color:var(--mc);border:1px solid var(--mbd)}
+    .el-water{background:var(--ab);color:var(--ac);border:1px solid var(--abd)}
+    .ten-god-badge{font-family:'Cinzel',serif;font-size:11px;color:var(--gold);letter-spacing:.12em;margin:6px 0 10px;display:block}
+    .special-badge{display:inline-block;background:rgba(200,149,58,.14);border:1px solid var(--gl);color:var(--gold);font-size:11px;padding:5px 16px;border-radius:20px;margin-bottom:10px}
+    .why-box{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-top:12px;text-align:left}
+    .why-box .why-lbl{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.22em;color:var(--gl);text-transform:uppercase;margin-bottom:6px}
+    .why-box p{font-size:14px;line-height:1.72;color:var(--dim)}
+    .branch-note{font-size:13px;color:var(--dim);font-style:italic;line-height:1.65;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+    .score-row{background:var(--surface);border:1px solid var(--b2);border-radius:18px;padding:18px;display:flex;align-items:center;gap:16px}
+    .score-n{font-family:'Cinzel Decorative',serif;font-size:50px;color:var(--gold);line-height:1;flex-shrink:0}
+    .score-n sub{font-size:16px;color:var(--dim)}
+    .score-r{flex:1}
+    .score-tag{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase;margin-bottom:7px}
+    .bar-track{background:var(--s2);border-radius:4px;height:6px;overflow:hidden}
+    .bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--gl),var(--gold));transition:width 1.4s cubic-bezier(.22,1,.36,1);width:0%}
+    .score-desc{font-size:12px;color:var(--dim);margin-top:6px}
+    .dual{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+    .half{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:14px}
+    .half-h{border-top:2px solid var(--teal)}.half-c{border-top:2px solid var(--red)}
+    .half-ttl{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px}
+    .half-h .half-ttl{color:var(--teal)}.half-c .half-ttl{color:var(--red)}
+    .half p{font-size:14px;line-height:1.72;color:var(--dim)}
+    .rcard{background:var(--surface);border:1px solid var(--border);border-radius:15px;overflow:hidden}
+    .rcard-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px}
+    .rcard-head .ico{font-size:16px}
+    .rcard-head .ttl{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;flex:1}
+    .rcard-body{padding:16px;display:flex;flex-direction:column;gap:10px}
+    .rcard-body p{font-size:15px;line-height:1.8;color:var(--text)}
+    .hours-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .hour-item{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+    .hour-item.best{border-color:var(--gold);background:rgba(200,149,58,.07)}
+    .hour-time{font-family:'Cinzel',serif;font-size:13px;color:var(--gold)}
+    .hour-act{font-size:12px;color:var(--dim);margin-top:3px;line-height:1.4}
+    .avoid-list{list-style:none;display:flex;flex-direction:column;gap:9px}
+    .avoid-list li{display:flex;align-items:flex-start;gap:10px;font-size:15px;line-height:1.7}
+    .avoid-dot{width:16px;height:16px;border-radius:50%;background:rgba(192,56,56,.2);border:1px solid var(--red);color:var(--red);font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+    .affirm-box{background:linear-gradient(135deg,rgba(200,149,58,.07),rgba(40,160,154,.05));border:1px solid var(--b2);border-radius:15px;padding:20px;text-align:center}
+    .affirm-lbl{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.25em;color:var(--gl);text-transform:uppercase;margin-bottom:14px}
+    .affirm-text{font-size:19px;line-height:1.7;color:var(--text);font-style:italic}
+    .affirm-text span{color:var(--gold);font-style:normal}
+    .lp-card{background:linear-gradient(135deg,rgba(58,20,5,.3),rgba(5,20,58,.2));border:1px solid var(--b2);border-radius:15px;overflow:hidden}
+    .lp-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px}
+    .lp-head .ico{font-size:16px}
+    .lp-head .ttl{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase}
+    .lp-body{padding:16px}
+    .lp-row{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px}
+    .lp-hanzi{font-size:44px;background:linear-gradient(160deg,var(--gh),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;flex-shrink:0}
+    .lp-meta{flex:1}
+    .lp-meta h3{font-size:15px;color:var(--text);margin-bottom:4px}
+    .lp-meta p{font-size:13px;color:var(--dim);line-height:1.65}
+    .lp-context{font-size:15px;line-height:1.78;color:var(--text)}
+    .lp-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+    .lp-tag{padding:4px 12px;border-radius:20px;font-size:11px;background:var(--s2);border:1px solid var(--b2);color:var(--dim)}
+    .lp-tag.hot{border-color:var(--gl);color:var(--gold)}
+    .chart-toggle{background:var(--surface);border:1px solid var(--border);border-radius:15px;overflow:hidden}
+    .ct-btn{width:100%;padding:14px 16px;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:10px;text-align:left}
+    .ct-btn .ico{font-size:15px}
+    .ct-btn .ttl{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;flex:1}
+    .ct-btn .arr{font-size:13px;color:var(--dim);transition:transform .25s}
+    .ct-btn.open .arr{transform:rotate(180deg)}
+    .ct-content{display:none;padding:0 16px 16px}
+    .ct-content.open{display:block}
+    .pm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+    .pm{text-align:center;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:9px 4px}
+    .pm .pm-l{font-size:8px;color:var(--dim);margin-bottom:4px}
+    .pm .pm-s{font-size:20px;color:var(--gold);line-height:1}
+    .pm .pm-b{font-size:20px;color:var(--dim);line-height:1;margin-top:2px}
+    .pm .pm-n{font-size:8px;color:var(--dim);margin-top:3px;line-height:1.3}
+    .chart-note{font-size:13px;color:var(--dim);line-height:1.65;font-style:italic}
+    .section-divider{display:flex;align-items:center;gap:10px;margin:4px 0}
+    .section-divider::before,.section-divider::after{content:'';flex:1;border-top:1px solid var(--border)}
+    .section-divider span{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.2em;color:var(--dim2);text-transform:uppercase}
+    .rv{opacity:0;filter:blur(18px) brightness(.6);transform:scale(.93) translateY(22px);transition:opacity .7s cubic-bezier(.22,1,.36,1),filter .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+    .rv.in{opacity:1;filter:blur(0px) brightness(1);transform:scale(1) translateY(0)}
+    .offline-badge{position:fixed;bottom:14px;right:14px;background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:11px;color:var(--dim);z-index:100}
+
+    /* ══ ANIMATION SYSTEM ══════════════════════════ */
+
+    /* Stagger delay classes */
+    .rv:nth-child(1){transition-delay:.05s}
+    .rv:nth-child(2){transition-delay:.1s}
+    .rv:nth-child(3){transition-delay:.15s}
+    .rv:nth-child(4){transition-delay:.2s}
+    .rv:nth-child(5){transition-delay:.25s}
+    .rv:nth-child(6){transition-delay:.3s}
+    .rv:nth-child(7){transition-delay:.35s}
+    .rv:nth-child(8){transition-delay:.4s}
+    .rv:nth-child(9){transition-delay:.45s}
+    .rv:nth-child(10){transition-delay:.5s}
+    .rv:nth-child(n+11){transition-delay:.55s}
+
+    /* 3D Lift — cards */
+    .rcard, .half, .score-row, .p-hero, .lp-card, .affirm-box, .chart-toggle {
+      transition: transform .22s cubic-bezier(.34,1.56,.64,1),
+                  box-shadow .22s ease;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    .rcard.lifted, .half.lifted, .score-row.lifted,
+    .p-hero.lifted, .lp-card.lifted, .affirm-box.lifted {
+      transform: translateY(-5px) scale(1.012);
+      box-shadow: 0 12px 40px rgba(200,149,58,.18), 0 4px 12px rgba(0,0,0,.4);
+    }
+
+    /* Gold glow pulse */
+    @keyframes goldGlow {
+      0%   { box-shadow: 0 0 0 0 rgba(200,149,58,.0); }
+      30%  { box-shadow: 0 0 20px 4px rgba(200,149,58,.35); }
+      100% { box-shadow: 0 0 0 0 rgba(200,149,58,.0); }
+    }
+    .glow-pulse { animation: goldGlow .7s ease-out forwards; }
+
+    /* Ripple */
+    .ripple-host { position: relative; overflow: hidden; }
+    .ripple {
+      position: absolute; border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,149,58,.45) 0%, transparent 70%);
+      transform: scale(0); pointer-events: none;
+      animation: rippleOut .65s cubic-bezier(.22,1,.36,1) forwards;
+    }
+    @keyframes rippleOut {
+      to { transform: scale(4); opacity: 0; }
+    }
+
+    /* Read button special glow */
+    .read-btn {
+      transition: transform .25s cubic-bezier(.34,1.56,.64,1),
+                  border-color .25s ease, box-shadow .25s ease !important;
+    }
+    .read-btn.lifted {
+      transform: translateY(-6px) scale(1.02);
+      border-color: var(--gold);
+      box-shadow: 0 0 40px rgba(200,149,58,.28), 0 8px 24px rgba(0,0,0,.5);
+    }
+
+    /* Mist canvas */
+    #mist-canvas {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none; opacity: .55;
+      mix-blend-mode: screen;
+    }
+    .home-body { position: relative; }
+
+    /* Score bar shimmer */
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    .bar-fill {
+      background: linear-gradient(90deg,
+        var(--gl) 0%, var(--gold) 40%,
+        var(--gh) 60%, var(--gold) 80%, var(--gl) 100%);
+      background-size: 200% auto;
+      animation: shimmer 3s linear infinite;
+    }
+
+    /* Section divider pulse dot */
+    .section-divider span {
+      position: relative;
+    }
+    .section-divider span::before {
+      content: '✦';
+      position: absolute; left: -16px;
+      animation: pulseDot 2s ease-in-out infinite;
+      opacity: .5;
+    }
+    @keyframes pulseDot {
+      0%,100% { opacity:.2; transform:scale(.8); }
+      50%      { opacity:.8; transform:scale(1.2); }
+    }
+
+    /* Mandala extra glow ring */
+    @keyframes glowRing {
+      0%,100% { opacity:.08; r:78px; }
+      50%     { opacity:.22; r:74px; }
+    }
+    #glow-ring { animation: glowRing 3s ease-in-out infinite; }
+
+    /* Ten god badge shimmer */
+    .ten-god-badge {
+      background: linear-gradient(90deg, var(--gl), var(--gold), var(--gh), var(--gold), var(--gl));
+      background-size: 300% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 4s linear infinite;
+    }
+
+
+    /* ══ ENHANCED ANIMATIONS ═══════════════════════ */
+
+    /* Lifted state — more pronounced */
+    .rcard.lifted, .half.lifted, .score-row.lifted,
+    .p-hero.lifted, .lp-card.lifted, .affirm-box.lifted,
+    .hour-item.lifted, .chart-toggle.lifted {
+      transform: translateY(-7px) scale(1.018) !important;
+      box-shadow: 0 16px 48px rgba(200,149,58,.22),
+                  0 6px 16px rgba(0,0,0,.5),
+                  inset 0 0 0 1px rgba(200,149,58,.25) !important;
+      z-index: 2;
+    }
+    .read-btn.lifted {
+      transform: translateY(-8px) scale(1.025) !important;
+      border-color: var(--gold) !important;
+      box-shadow: 0 0 50px rgba(200,149,58,.35),
+                  0 12px 30px rgba(0,0,0,.5) !important;
+    }
+
+    /* Gold glow — bigger, more visible */
+    @keyframes goldGlow2 {
+      0%   { box-shadow: 0 0 0 0 rgba(200,149,58,.0), 0 0 0 0 rgba(200,149,58,.0); }
+      25%  { box-shadow: 0 0 30px 6px rgba(200,149,58,.4), 0 0 60px 10px rgba(200,149,58,.15); }
+      100% { box-shadow: 0 0 0 0 rgba(200,149,58,.0), 0 0 0 0 rgba(200,149,58,.0); }
+    }
+    .glow-pulse { animation: goldGlow2 .8s ease-out forwards !important; }
+
+    /* Ripple keyframe (redefined) */
+    @keyframes rippleOut {
+      0%   { transform: scale(0); opacity: 1; }
+      100% { transform: scale(1); opacity: 0; }
+    }
+
+    /* Mist canvas — more visible */
+    #mist-canvas {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      opacity: .8;
+      mix-blend-mode: screen;
+    }
+
+    /* Cards transition smoothness */
+    .rcard, .half, .score-row, .p-hero,
+    .lp-card, .affirm-box, .chart-toggle, .hour-item {
+      transition:
+        transform .28s cubic-bezier(.34,1.56,.64,1),
+        box-shadow .28s ease !important;
+      will-change: transform;
+    }
+
+
+    /* ══ SECTION DETAIL GRIDS ══════════════════════ */
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 4px;
+    }
+    .dg-cell {
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 11px;
+      transition: transform .22s cubic-bezier(.34,1.56,.64,1),
+                  box-shadow .22s ease, border-color .22s ease;
+    }
+    .dg-cell:active, .dg-cell.lifted {
+      transform: translateY(-4px) scale(1.03);
+      border-color: var(--gold);
+      box-shadow: 0 8px 24px rgba(200,149,58,.18);
+    }
+    .dg-cell.accent-teal  { border-top: 2px solid var(--teal); }
+    .dg-cell.accent-red   { border-top: 2px solid var(--red); }
+    .dg-cell.accent-gold  { border-top: 2px solid var(--gold); }
+    .dg-cell.accent-dim   { border-top: 2px solid var(--border2); }
+    .dg-cell.wide {
+      grid-column: 1 / -1;
+    }
+    .dg-ico  {
+      font-size: 20px;
+      margin-bottom: 6px;
+      display: block;
+    }
+    .dg-lbl {
+      font-family: 'Cinzel', serif;
+      font-size: 8px;
+      letter-spacing: .18em;
+      color: var(--gl);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .dg-txt {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--text);
+    }
+    .dg-txt.dim { color: var(--dim); }
+    .dg-bar-wrap {
+      margin-top: 6px;
+      background: var(--surface);
+      border-radius: 4px;
+      height: 4px;
+      overflow: hidden;
+    }
+    .dg-bar {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 1.2s cubic-bezier(.22,1,.36,1);
+    }
+    .dg-bar.gold  { background: linear-gradient(90deg, var(--gl), var(--gold)); }
+    .dg-bar.teal  { background: linear-gradient(90deg, #14605c, var(--teal)); }
+    .dg-bar.red   { background: linear-gradient(90deg, #601010, var(--red)); }
+    .dg-tag {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 10px;
+      font-size: 11px;
+      margin-top: 4px;
+    }
+    .tag-good { background: rgba(40,160,154,.15); color: var(--teal); border: 1px solid #164d4a; }
+    .tag-warn { background: rgba(192,56,56,.15);  color: #e07070;     border: 1px solid #601010; }
+    .tag-gold { background: rgba(200,149,58,.15); color: var(--gold); border: 1px solid var(--gl); }
+    .tag-dim  { background: var(--s2);            color: var(--dim);  border: 1px solid var(--border); }
+    .section-intro {
+      font-size: 15px;
+      line-height: 1.78;
+      color: var(--dim);
+      font-style: italic;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+
+    /* ══ SUB-ACCORDION (detail grid) ═══════════════ */
+    .sub-toggle {
+      width: 100%;
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 16px;
+      margin-top: 14px;
+      transition: background .2s, border-color .2s, transform .18s;
+      position: relative; overflow: hidden;
+    }
+    .sub-toggle:active {
+      transform: scale(.97);
+      background: var(--s3);
+      border-color: var(--gl);
+    }
+    .sub-toggle.open {
+      background: linear-gradient(135deg, rgba(200,149,58,.10), rgba(40,160,154,.05));
+      border-color: var(--gl);
+    }
+    .sub-toggle .st-ico {
+      font-size: 20px; flex-shrink: 0;
+      transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+    }
+    .sub-toggle.open .st-ico { transform: rotate(15deg) scale(1.15); }
+    .sub-toggle .st-lbl {
+      font-family: 'Cinzel', serif; font-size: 10px;
+      letter-spacing: .18em; color: var(--gold);
+      text-transform: uppercase; flex: 1; text-align: left;
+    }
+    .sub-toggle .st-count {
+      font-size: 11px; color: var(--dim);
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 2px 10px;
+      flex-shrink: 0;
+    }
+    .sub-toggle.open .st-count { opacity: 0; }
+    .sub-toggle .st-arr {
+      font-size: 14px; color: var(--dim);
+      transition: transform .32s cubic-bezier(.34,1.56,.64,1);
+      flex-shrink: 0;
+    }
+    .sub-toggle.open .st-arr { transform: rotate(180deg); color: var(--gold); }
+
+    .sub-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height .5s cubic-bezier(.22,1,.36,1),
+                  opacity .4s ease;
+      opacity: 0;
+    }
+    .sub-body.open {
+      max-height: 900px;
+      opacity: 1;
+    }
+    .sub-inner { padding-top: 12px; }
+
+    /* tag chips */
+    .tag-good { background: rgba(40,160,154,.15); color: var(--teal); border: 1px solid #164d4a; }
+    .tag-warn { background: rgba(192,56,56,.15);  color: #e07070;     border: 1px solid #601010; }
+    .tag-gold { background: rgba(200,149,58,.15); color: var(--gold); border: 1px solid var(--gl); }
+    .tag-dim  { background: var(--s2); color: var(--dim); border: 1px solid var(--border); }
+
+
+    /* ══ GRID ENHANCEMENTS ══════════════════════════ */
+    .dg-cell.wide {
+      grid-column: 1 / -1;
+    }
+    .compass-wrap {
+      display: flex; align-items: center; gap: 14px; margin-top: 8px;
+    }
+    .compass-svg { flex-shrink: 0; }
+    .compass-txt { font-size: 13px; color: var(--dim); line-height: 1.6; }
+    .compass-txt strong { color: var(--gold); font-style: normal; }
+    .dg-cell .dg-txt p {
+      margin-bottom: 6px; font-size: 14px; line-height: 1.68; color: var(--text);
+    }
+    .dg-cell .dg-txt p:last-child { margin-bottom: 0; }
+    .dg-cell .dg-txt p.dim { color: var(--dim); }
+
+  </style>
+</head>
+<body>
+
+<section id="screen-home" class="screen">
+  <div class="home-top">
+    <div class="home-date" id="home-date"></div>
+    <div class="home-greet">Selamat datang, <span>Reyhan</span></div>
+    <div class="home-dm">&#30000; Yang Wood &middot; Day Master &middot; Kua 1</div>
+  </div>
+  <div class="home-body">
+    <canvas id="mist-canvas"></canvas><div class="mandala">
+      <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e8c060"/><stop offset="50%" stop-color="#c8953a"/><stop offset="100%" stop-color="#6a4010"/></linearGradient></defs>
+        <g class="ring-a"><circle cx="80" cy="80" r="76" fill="none" stroke="url(#gg)" stroke-width=".8" stroke-dasharray="4 12" opacity=".4"/>
+        <line x1="80" y1="4" x2="80" y2="14" stroke="#c8953a" stroke-width="1.5" opacity=".5"/><line x1="156" y1="80" x2="146" y2="80" stroke="#c8953a" stroke-width="1.5" opacity=".5"/>
+        <line x1="80" y1="156" x2="80" y2="146" stroke="#c8953a" stroke-width="1.5" opacity=".5"/><line x1="4" y1="80" x2="14" y2="80" stroke="#c8953a" stroke-width="1.5" opacity=".5"/>
+        <line x1="130" y1="22" x2="123" y2="29" stroke="#c8953a" stroke-width="1" opacity=".3"/><line x1="138" y1="130" x2="131" y2="123" stroke="#c8953a" stroke-width="1" opacity=".3"/>
+        <line x1="30" y1="138" x2="37" y2="131" stroke="#c8953a" stroke-width="1" opacity=".3"/><line x1="22" y1="30" x2="29" y2="37" stroke="#c8953a" stroke-width="1" opacity=".3"/></g>
+        <g class="ring-b"><circle cx="80" cy="80" r="55" fill="none" stroke="#c8953a" stroke-width=".5" stroke-dasharray="2 8" opacity=".22"/></g>
+        <circle id="glow-ring" cx="80" cy="80" r="76" fill="none" stroke="#c8953a" stroke-width="3"/><circle cx="80" cy="80" r="38" fill="#0a0a18" stroke="#1c1c38" stroke-width=".5"/>
+        <text x="80" y="104" text-anchor="middle" font-size="52" fill="url(#gg)" font-family="serif" opacity=".9">&#21629;</text>
+      </svg>
+    </div>
+    <button class="read-btn" onclick="showReading()">
+      <div class="btn-main">
+        <span class="btn-ico">&#128302;</span>
+        <span class="btn-lbl">BACA BAZI HARI INI</span>
+        <span class="btn-sub" id="btn-sub">Ketuk untuk membaca energi harimu</span>
+      </div>
+      <div class="btn-lp">
+        <span>Luck Pillar (usia 26):</span>
+        <strong>&#36763;&#26410; Yin Metal / Goat</strong>
+      </div>
+    </button>
+    <div class="last-info">Data pilar tersimpan permanen &middot; Tidak butuh internet</div>
+  </div>
+</section>
+
+<section id="screen-reading" class="screen">
+  <div class="rbar">
+    <div class="back" onclick="showHome()">&larr;</div>
+    <div class="rbar-info">
+      <h2>Bacaan Hari Ini</h2>
+      <p id="read-date"></p>
+    </div>
+  </div>
+  <div class="rbody" id="rbody"></div>
+</section>
+<div class="offline-badge">&#128274; Offline</div>
+<script>
+
+const STEMS=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const BRANCHES=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const STEM_META=[
+['Jiǎ','Kayu',false,'比肩','Companion'],['Yǐ','Kayu',true,'劫财','Rob Wealth'],
+['Bǐng','Api',false,'食神','Eating God'],['Dīng','Api',true,'伤官','Hurting Officer'],
+['Wù','Tanah',false,'偏财','Indirect Wealth'],['Jǐ','Tanah',true,'正财','Direct Wealth'],
+['Gēng','Logam',false,'七杀','7 Killings'],['Xīn','Logam',true,'正官','Direct Officer'],
+['Rén','Air',false,'偏印','Indirect Resource'],['Guǐ','Air',true,'正印','Direct Resource'],
+];
+const BRANCH_META=[
+['Zǐ','Tikus','Air',true],['Chǒu','Kerbau','Tanah',true],['Yín','Macan','Kayu',false],['Mǎo','Kelinci','Kayu',true],
+['Chén','Naga','Tanah',false],['Sì','Ular','Api',true],['Wǔ','Kuda','Api',false],['Wèi','Kambing','Tanah',true],
+['Shēn','Monyet','Logam',false],['Yǒu','Ayam','Logam',true],['Xū','Anjing','Tanah',false],['Hài','Babi','Air',true],
+];
+
+const D=[
+{score:4,energy:'Dua pohon raksasa berdiri di ladang yang sama hari ini. Energi 比肩 Companion hadir — sejajar, setara, dan penuh dinamika persaingan maupun persahabatan.',
+why:'甲 Yang Wood hari ini merefleksikan Day Master-mu sendiri. Dalam teori Bazi, ini menciptakan resonansi kuat sekaligus "memperebutkan sumber daya" — dua elemen identik berkompetisi untuk nutrisi yang sama. Kayu yang sudah sangat dominan dalam chartmu semakin menguat, yang berarti elemen Api (lucky element-mu) semakin dibutuhkan sebagai output dan penyeimbang.',
+harmony:'Hari ini kamu bisa menemukan jiwa-jiwa yang benar-benar satu gelombang denganmu — orang yang straight-forward, determined, dan kind seperti dirimu. Kolaborasi dengan seseorang yang memiliki nilai serupa bisa sangat produktif.',
+conflict:'Sifat keras kepala dan determinasi-mu bisa bertabrakan dengan orang lain yang sama kerasnya. Dua pohon di tanah yang sama memperebutkan cahaya matahari — waspada ego dan keinginan untuk "selalu benar".',
+career:'Hari kompetitif di lingkungan kerja. Performamu terlihat jelas oleh orang-orang sekelilingmu — ini bisa jadi keuntungan jika kamu unggul. Tunda pengambilan keputusan besar dan fokus pada eksekusi pekerjaan yang sudah ada.',
+health:'Kayu yang berlebih bisa menekan elemen Tanah (pencernaan dan otot). Perhatikan pola makan hari ini — hindari makan terburu-buru. Energi fisik terasa besar tapi mudah terkuras; jangan paksakan diri sampai kelelahan.',
+finance:'Hari yang kurang ideal untuk investasi atau transaksi finansial besar. Energi 比肩 cenderung "membelah" rezeki — ada potensi pengeluaran tidak terduga atau perlu berbagi sumber daya dengan orang lain.',
+romance:'Pertemuan dengan seseorang yang sangat mirip denganmu bisa menarik sekaligus menegangkan. Kesamaan visi menciptakan koneksi yang dalam, tapi kesamaan ego bisa menciptakan gesekan. Hari ini hindari debat yang tidak perlu.',
+avoid:['Memaksakan pendapat dalam diskusi — fleksibilitas lebih kuat hari ini.','Membuka negosiasi atau deal finansial baru.','Keputusan impulsif karena merasa "saingan" melakukan hal yang sama.'],
+hours:[{time:'09:00–11:00',label:'巳 Ular',act:'Presentasi & pitch ide',best:true},{time:'11:00–13:00',label:'午 Kuda',act:'Interaksi sosial & negosiasi',best:true},{time:'13:00–15:00',label:'未 Kambing',act:'Pekerjaan mandiri & fokus',best:false},{time:'19:00–21:00',label:'戌 Anjing',act:'Perencanaan esok hari',best:false}],
+affirmation:'Aku tidak perlu bersaing untuk bersinar. <span>Cahayaku sendiri</span> sudah cukup untuk menerangi jalan yang kupilih.',
+lpContext:'Luck Pillar 辛未 memberikan tekanan struktural pada energi Kayu ini — 辛 Metal memangkas 甲 Wood hari ini, membuatmu lebih terdisiplin namun juga lebih sensitif terhadap kritik. Manfaatkan energi 辛 untuk memperhalus cara kerja dan presentasi dirimu.'},
+
+{score:3,energy:'Tanaman merambat 乙 Yin Wood melilit pohon besar 甲 hari ini — energi 劫财 Rob Wealth hadir, membawa dinamika "pengurasan" yang perlu diwaspadai secara sadar.',
+why:'乙 Yin Wood juga elemen Kayu seperti Day Master-mu, namun bersifat parasitik dalam hubungan ini. 劫财 secara harfiah berarti "merampok kekayaan" — bukan kamu dirampok, melainkan energi hari ini cenderung menguras sumber daya (waktu, uang, tenaga) melalui orang atau situasi di sekitarmu. Chartmu yang sudah berat di Kayu semakin berat hari ini.',
+harmony:'Sisi terang 劫财 mendorongmu menjadi lebih kolaboratif dan murah hati. Hari ini kamu bisa merasakan empati yang lebih dalam terhadap orang-orang sekitar — dan kebaikan hatimu (kind) akan sangat terasa dan dihargai.',
+conflict:'Potensi kebocoran finansial atau energi cukup tinggi. Seseorang mungkin meminta lebih dari yang seharusnya — baik waktu, tenaga, maupun uang. Determinasi-mu bisa membuat kamu sulit menolak, yang justru memperburuk situasi.',
+career:'Hindari memulai proyek atau deal baru hari ini. Fokus pada pekerjaan maintenance dan koordinasi. Kalau ada rekan yang terasa "numpang" pada hasil kerjamu, catat tapi jangan konfrontasi — simpan energimu.',
+health:'Energi tubuh cenderung kurang stabil hari ini. Sistem imun dan pencernaan perlu perhatian ekstra — makan tepat waktu dan cukup tidur. Hindari begadang karena tubuh butuh recovery di hari 劫财.',
+finance:'Hari terburuk dalam 10-hari siklus untuk transaksi finansial. Hindari meminjamkan uang, investasi baru, atau pembelian impulsif. Kalau ada tagihan jatuh tempo, lunasi lebih awal tapi jangan tambah pengeluaran baru.',
+romance:'Waspada dinamika "satu pihak memberi terlalu banyak" dalam hubungan. Kalau kamu mulai merasa lelah atau tidak dihargai, ini sinyal dari energi hari ini — bukan kesimpulan permanen. Batasi ekspektasi dan nikmati momen sederhana.',
+avoid:['Meminjamkan uang atau barang berharga hari ini.','Membuka topik finansial serius dengan pasangan atau keluarga.','Menyetujui komitmen tambahan di tempat kerja yang menguras tenagamu.'],
+hours:[{time:'07:00–09:00',label:'辰 Naga',act:'Pekerjaan personal & mandiri',best:true},{time:'13:00–15:00',label:'未 Kambing',act:'Review & evaluasi kerja',best:true},{time:'09:00–11:00',label:'巳 Ular',act:'Hindari meeting penting',best:false},{time:'15:00–17:00',label:'申 Monyet',act:'Hindari perjalanan jauh',best:false}],
+affirmation:'Aku memberi dari kelimpahan, bukan dari ketakutan. <span>Batasku</span> adalah bentuk cinta untuk diriku sendiri.',
+lpContext:'Luck Pillar 辛未 memberikan sedikit perlindungan dari energi 劫财 hari ini — 辛 Metal (正官) memberikan struktur dan batasan yang justru kamu butuhkan. Gunakan energi 辛 untuk menegakkan batasan yang jelas dan profesional hari ini.'},
+
+{score:8,energy:'Matahari 丙 Yang Fire bersinar terang di atas pohon 甲 hari ini — energi 食神 Eating God mengalir bebas, membawa kreativitas, kegembiraan, dan ekspresi yang benar-benar autentik.',
+why:'丙 Yang Fire adalah elemen Output utama dari 甲 Yang Wood. Dalam siklus Five Elements, Kayu menghasilkan Api — seperti pohon yang terbakar menjadi cahaya. 食神 adalah Ten God paling "bahagia" dalam Bazi, melambangkan ekspresi diri yang natural dan talent yang mengalir. Ini juga elemen Lucky-mu — hari terbaik dalam siklus 10 hari.',
+harmony:'Pohon mendapat sinar matahari penuh — kondisi ideal untuk bertumbuh. Segala bentuk ekspresi diri, kreativitas, dan interaksi sosial terasa sangat natural dan effortless. Orang lain merasakan kehangatan dan ketulusan dari cara kamu berbicara dan bergerak.',
+conflict:'Energi yang terlalu mengalir bisa membuatmu sulit fokus pada satu hal. Banyak ide bagus datang sekaligus, tapi tanpa filter bisa berakhir tidak ada yang tuntas. Jadwalkan dan prioritaskan.',
+career:'Hari TERBAIK untuk presentasi, pitching, wawancara, rapat penting, atau apapun yang butuh komunikasi verbal. Kata-katamu keluar dengan natural, meyakinkan, dan memikat. Kalau ada ide yang ingin disampaikan ke atasan atau klien — ini momentumnya.',
+health:'Energi tubuh sangat baik hari ini. Sistem kardiovaskular dan sirkulasi darah optimal — bagus untuk olahraga intensitas tinggi, lari, atau aktivitas yang membuat berkeringat. Vitalitas dan mood akan terasa meningkat signifikan.',
+finance:'Rezeki mengalir natural hari ini — cocok untuk negosiasi gaji, proposal harga, atau membuka diskusi finansial yang sebelumnya tertunda. Peluang pendapatan dari kreativitas atau talent-mu bisa muncul.',
+romance:'Pesonamu alami seperti sinar matahari hari ini — hangat, menarik, dan tulus. Hari terbaik untuk kencan pertama, ungkapan perasaan, atau memperdalam hubungan. Komunikasimu akan terdengar romantis secara natural tanpa perlu dipaksakan.',
+avoid:['Menyia-nyiakan momentum ini untuk pekerjaan tidak penting.','Terlalu banyak berbicara hingga lupa mendengarkan — jaga keseimbangan.','Menghabiskan waktu menyendiri — energimu hari ini butuh disalurkan keluar.'],
+hours:[{time:'11:00–13:00',label:'午 Kuda ✦',act:'Aktivitas terpenting hari ini',best:true},{time:'09:00–11:00',label:'巳 Ular',act:'Meeting & presentasi',best:true},{time:'13:00–15:00',label:'未 Kambing',act:'Kreativitas & ideasi',best:true},{time:'07:00–09:00',label:'辰 Naga',act:'Persiapan & warm-up',best:false}],
+affirmation:'Aku adalah cahaya yang tidak perlu bersembunyi. <span>Ekspresi sejatiku</span> adalah hadiah terbaik yang bisa kuberikan pada dunia.',
+lpContext:'Luck Pillar 辛未 semakin memperkuat hari 食神 ini — 未 Goat mengandung 丁 Yin Fire di hidden stem yang beresonansi dengan energi Api hari ini. Ini menciptakan "double output" yang sangat menguntungkan — kreativitas dan ekspresimu mendapat dukungan dari Luck Pillar sekaligus energi hari ini.'},
+
+{score:9,energy:'Nyala lilin 丁 Yin Fire bersinar dengan cahaya yang tajam dan brilian hari ini — energi 伤官 Hurting Officer mengaktifkan kecerdasan tertinggi, inovasi, dan ekspresi yang melampaui batas konvensi.',
+why:'丁 Yin Fire adalah elemen Output kedua dari 甲 Yang Wood — berbeda dengan 丙 yang terang dan luas, 丁 adalah cahaya yang concentrated, intens, dan brilian. 伤官 disebut Hurting Officer karena secara simbolis "melukai" struktur dan aturan — ini adalah Ten God para inovator, seniman, dan pemikir di luar kotak. Bagi 甲 Yang Wood yang naturally determined, 丁 hari ini adalah katalis untuk menerobos semua hambatan.',
+harmony:'甲+丁 seperti pohon raksasa yang terbakar menjadi senter — semua potensi tersublimasi menjadi cahaya murni. Kecerdasan, karisma, dan keberanianmu bekerja sinergis hari ini. Hari terbaik dalam siklus 60 hari.',
+conflict:'伤官 yang terlalu kuat bisa membuatmu terlalu kritis, terlalu opinionated, atau terlalu "berbeda" bagi sebagian orang. Waspada menyinggung figur otoritas dengan cara yang tidak perlu.',
+career:'Hari untuk terobosan. Problem yang selama ini macet bisa tiba-tiba terpecahkan dengan cara yang sama sekali tidak terduga. Hari terbaik untuk brainstorming, inovasi, negosiasi yang butuh kecerdasan, atau apapun yang membutuhkan pemikiran di luar jalur biasa.',
+health:'Energi mental sangat tinggi — waspada overthinking atau sistem saraf yang terlalu aktif. Perhatikan kualitas tidur malam ini. Olahraga intensitas sedang seperti yoga atau jalan cepat bisa membantu menyalurkan energi berlebih. Hindari kafein berlebih.',
+finance:'Intuisi finansialmu sangat tajam hari ini — percaya insting-mu. Peluang tidak konvensional atau ide bisnis yang "tidak biasa" layak dipertimbangkan serius. Tapi kalkulasi tetap perlu — jangan biarkan kebrilianan mengalahkan kehati-hatian.',
+romance:'Kecerdasan dan kedalaman pikirmu sangat menarik hari ini. Percakapan dengan orang yang kamu dekati bisa menjadi sangat mendalam dan berkesan. Tapi 伤官 bisa membuatmu terlalu kritis — pilih kata dengan bijak tentang hal-hal sensitif.',
+avoid:['Berdebat dengan figur otoritas atau atasan secara frontal.','Membuat keputusan yang hanya berdasar intuisi tanpa analisis sama sekali.','Tidur terlalu larut — sistem saraf butuh istirahat setelah hari yang sangat aktif ini.'],
+hours:[{time:'11:00–13:00',label:'午 Kuda ✦',act:'Momen puncak — aksi terpenting',best:true},{time:'09:00–11:00',label:'巳 Ular',act:'Brainstorming & inovasi',best:true},{time:'19:00–21:00',label:'戌 Anjing',act:'Refleksi & journaling',best:true},{time:'21:00–23:00',label:'亥 Babi',act:'Kreasi malam & ekspresi seni',best:false}],
+affirmation:'Kecerdasanku adalah kekuatan, bukan ancaman. Aku berani <span>berpikir berbeda</span> karena dunia butuh perspektif yang belum pernah ada.',
+lpContext:'Ini adalah kombinasi terbaik dalam konteks Luck Pillar-mu saat ini. 辛未 (正官) dan 伤官 secara teknis berseberangan — tapi ini justru menciptakan tegangan produktif: kamu cukup "nakal" untuk berinovasi, namun cukup "terstruktur" untuk mewujudkannya. Luck Pillar memberikanmu kredibilitas untuk menyampaikan ide brilian dengan cara yang bisa diterima sistem.'},
+
+{score:8,energy:'Tanah Yang 戊 yang luas dan subur menjadi medan bagi akar pohon 甲 untuk menyerap rezeki dari segala penjuru. Energi 偏财 Indirect Wealth membawa peluang, windfall, dan koneksi yang membuka pintu.',
+why:'戊 Yang Earth adalah elemen Wealth bagi 甲 Yang Wood — dalam Bazi, elemen yang "dikontrol" oleh Day Master adalah Wealth. 偏财 berarti rezeki dari luar jalur karir utama: bisnis sampingan, bonus tak terduga, deal tidak formal, atau koneksi yang menguntungkan. Karena chartmu sudah kuat di Wood, kemunculan Earth hari ini sangat disambut baik sebagai penyeimbang yang menguntungkan.',
+harmony:'Pohon yang berakar di tanah subur bisa tumbuh sangat tinggi. Energi 偏财 sangat selaras dengan sifat determined dan enterprising-mu. Hari ini koneksi, peluang, dan pintu-pintu baru bisa terbuka secara natural.',
+conflict:'偏财 juga bisa berarti "uang yang datang cepat, pergi cepat" — rezeki yang datang hari ini bisa sama mudahnya keluar kalau tidak dikelola dengan sadar. Hindari pengeluaran impulsif meski mood-mu sedang bagus.',
+career:'Hari terbaik untuk networking, negosiasi deal, sales, atau pitching bisnis. Koneksi yang kamu bangun hari ini memiliki potensi jangka panjang yang sangat besar. Kalau ada project yang membutuhkan partnership, inisiasi hari ini.',
+health:'Energi tubuh baik dan stabil. Elemen Earth mendukung sistem pencernaan dan otot — hari yang bagus untuk aktivitas fisik outdoor. Makanan bergizi dan porsi yang cukup akan membuat tubuh terasa prima. Hindari makan berlebihan meski selera makan sedang meningkat.',
+finance:'Hari terbaik dalam siklus untuk aktivitas finansial. Buka rekening investasi, mulai bisnis sampingan, negosiasi harga, atau finalisasi deal yang sudah dinegosiasikan. Arah Tenggara (SE) adalah arah Success-mu — kalau ada pertemuan finansial penting, posisikan menghadap ke sana.',
+romance:'Magnetisme sosialmu sangat tinggi hari ini — orang tertarik pada energi percaya dirimu. Hari yang sangat baik untuk kenalan baru atau memperdalam hubungan. Aktivitas outdoor atau makan malam di tempat bagus akan memaksimalkan energi 偏财 dalam konteks asmara.',
+avoid:['Pembelian impulsif karena mood sedang sangat baik.','Mengabaikan follow-up terhadap koneksi yang sudah dibangun hari ini.','Berbicara tentang uang atau rencana finansial di depan orang yang tidak perlu tahu.'],
+hours:[{time:'09:00–11:00',label:'巳 Ular ✦',act:'Networking & deal terpenting',best:true},{time:'13:00–15:00',label:'未 Kambing',act:'Follow-up & negosiasi',best:true},{time:'11:00–13:00',label:'午 Kuda',act:'Presentasi & pitching',best:true},{time:'07:00–09:00',label:'辰 Naga',act:'Persiapan & riset',best:false}],
+affirmation:'Aku adalah magnet bagi peluang dan rezeki yang tepat. <span>Kelimpahanku</span> datang dari nilai yang aku berikan kepada dunia.',
+lpContext:'Luck Pillar 辛未 — 未 Goat mengandung 己 Yin Earth (正财) sebagai hidden stem utama. Ini artinya energi 偏财 hari ini mendapat "lapisan ganda" dari hidden stem Luck Pillar-mu. Kamu sedang berada di fase hidup di mana pintu kekayaan materi sedang terbuka secara struktural — hari 戊 adalah momentum terbaiknya.'},
+
+{score:7,energy:'Tanah Yin 己 yang lembut dan subur memberi nutrisi stabil bagi akar pohon 甲. Energi 正财 Direct Wealth mengalir pelan tapi pasti — hari untuk kerja keras yang berbuah nyata.',
+why:'己 Yin Earth adalah 正财 (Direct Wealth) bagi 甲 Yang Wood. Berbeda dengan 偏财 yang datang tiba-tiba, 正财 adalah rezeki dari kerja keras konsisten, gaji, upah, dan penghargaan yang terukur. Ini adalah energi yang paling "stabil" dalam kategori Wealth — sangat cocok dengan karakter determined-mu yang menghargai proses.',
+harmony:'正财 sangat menghargai ketekunan, kejujuran, dan kerja yang nyata — tiga hal yang sangat melekat pada karaktermu. Hari ini usaha-usaha yang sudah kamu lakukan sebelumnya mulai menghasilkan bukti nyata yang bisa dirasakan.',
+conflict:'Energi ini cenderung lambat dan prosedural. Kalau kamu suka bergerak cepat dan spontan, hari ini mungkin terasa membosankan atau penuh birokrasi yang menguras kesabaran.',
+career:'Hari untuk menyelesaikan pekerjaan yang sudah berjalan, bukan memulai yang baru. Laporan, dokumen, review, administrasi — semua ini berjalan lancar hari ini. Ada kemungkinan pembayaran, pengakuan, atau apresiasi atas kerja keras sebelumnya datang hari ini.',
+health:'Tubuh meminta ritme yang stabil hari ini. Makan teratur, tidur cukup, dan hindari perubahan mendadak dalam rutinitas. Sistem pencernaan dan metabolisme berjalan optimal kalau kamu menjaga konsistensi. Stretching ringan di pagi hari sangat direkomendasikan.',
+finance:'Hari yang sangat baik untuk menabung, membuat anggaran, atau review keuangan. Transaksi yang sudah direncanakan sebelumnya akan berjalan lancar. Hindari spekulasi — hari ini adalah tentang membangun fondasi finansial yang solid dan bertahap.',
+romance:'Energi yang stabil, hangat, dan dapat diandalkan. Ketulusan dan kebaikanmu (kind) sangat terasa dan dihargai hari ini. Cocok untuk quality time yang bermakna — bukan kencan yang showy, tapi momen sederhana yang mempererat koneksi.',
+avoid:['Spekulasi finansial atau keputusan investasi yang terburu-buru.','Memaksakan diri untuk bergerak cepat — hormati ritme hari ini.','Mengabaikan detail kecil dalam pekerjaan — presisi sangat penting hari ini.'],
+hours:[{time:'07:00–09:00',label:'辰 Naga',act:'Pekerjaan terstruktur & administrasi',best:true},{time:'13:00–15:00',label:'未 Kambing',act:'Review & evaluasi finansial',best:true},{time:'11:00–13:00',label:'午 Kuda',act:'Penyelesaian tugas penting',best:false},{time:'19:00–21:00',label:'戌 Anjing',act:'Quality time dengan orang terdekat',best:false}],
+affirmation:'Setiap langkah kecil yang konsisten membangun <span>fondasi yang tidak bisa digoyahkan</span>. Prosesku adalah kekuatanku.',
+lpContext:'己 hari ini beresonansi langsung dengan hidden stem utama Luck Pillar-mu — 未 Goat mengandung 己 Yin Earth sebagai komponen terkuat. Ini menciptakan resonansi yang sangat kuat antara energi hari ini dan Luck Pillar-mu: manifestasi finansial yang kamu kejar dalam fase hidup ini mendapat "konfirmasi" dari alam semesta hari ini.'},
+
+{score:5,energy:'Kapak besi besar 庚 Yang Metal menghadang pohon 甲 hari ini — energi 七杀 Seven Killings membawa tekanan, tantangan, dan tuntutan yang menguji ketangguhan sejati.',
+why:'庚 Yang Metal adalah elemen yang mengontrol (memotong) 甲 Yang Wood. Dalam Bazi, Metal yang mengontrol Wood tanpa keseimbangan menciptakan tekanan dan konfrontasi. 七杀 ("Seven Killings") adalah Ten God yang paling agresif — namun bagi seseorang yang kuat dan determined seperti Reyhan, tekanan ini bisa menjadi katalis pertumbuhan. Pohon yang dipangkas dengan benar justru tumbuh lebih kuat.',
+harmony:'Ketangguhan dan determinasi-mu sebagai 甲 Yang Wood sangat dibutuhkan hari ini. Orang-orang yang melihatmu menghadapi tekanan dengan tenang akan sangat menghormatimu. Hari ini membangun reputasi yang nyata.',
+conflict:'Konfrontasi, konflik otoritas, tekanan dari atasan atau sistem, dan situasi yang menguras tenaga bisa muncul bersamaan. Sifat straight-forward-mu bisa terasa terlalu tajam di hari yang sudah tegang ini.',
+career:'Hari penuh tuntutan — tekanan dari atasan, deadline, atau ekspektasi yang tinggi. Tapi ini juga hari terbaik untuk membuktikan kemampuan di bawah tekanan. Kalau kamu bisa tampil baik hari ini, reputasimu akan menguat secara signifikan.',
+health:'Stres fisik dan mental lebih tinggi dari biasanya. Perhatikan area kepala, tenggorokan, dan sistem pernapasan. Luangkan waktu untuk pernapasan dalam atau meditasi singkat. Hindari lingkungan yang bising atau terlalu stimulating.',
+finance:'Bukan hari untuk transaksi finansial besar. Ada potensi pengeluaran mendadak karena situasi tidak terduga. Simpan cadangan dan hindari keputusan finansial di bawah tekanan.',
+romance:'七杀 membawa tegangan — potensi gesekan dalam hubungan lebih tinggi dari biasanya. Orang yang kamu sayangi mungkin juga merasakan tekanan hari ini. Pilih kata dengan sangat hati-hati, dan berikan ruang jika diperlukan.',
+avoid:['Konfrontasi langsung dengan figur otoritas tanpa persiapan matang.','Membuat keputusan besar di bawah tekanan — tunggu energi lebih kondusif.','Memaksakan diri secara fisik — risiko cedera atau kelelahan lebih tinggi hari ini.'],
+hours:[{time:'11:00–13:00',label:'午 Kuda ✦',act:'Aktivitas terpenting — Fire melindungi Wood',best:true},{time:'09:00–11:00',label:'巳 Ular',act:'Penanganan masalah dengan kepala dingin',best:true},{time:'13:00–15:00',label:'未 Kambing',act:'Pekerjaan individual & fokus',best:false},{time:'05:00–07:00',label:'卯 Kelinci',act:'Olahraga pagi — buang stres sejak dini',best:false}],
+affirmation:'Tekanan tidak menghancurkanku — ia membentukku. Aku seperti <span>pohon yang berakar kuat</span>: semakin badai datang, semakin dalam aku berpijak.',
+lpContext:'Luck Pillar 辛未 memberikan konteks yang menarik untuk hari 七杀 ini — 辛 Metal (正官) dan 庚 Metal (七杀) sama-sama Metal, tapi berbeda karakter. 辛 yang lembut di Luck Pillar-mu bisa menjadi penengah dari 庚 yang agresif hari ini: gunakan struktur dan prosedur (energi 辛) untuk menghadapi tekanan (energi 庚) — bukan dengan konfrontasi langsung, tapi dengan sistem yang terorganisir.'},
+
+{score:6,energy:'Logam Yin 辛 seperti pisau ukir yang presisi — membentuk dan mengarahkan pohon 甲 dengan tangan yang terlatih. Energi 正官 Direct Officer membawa struktur, tanggung jawab, dan pengakuan.',
+why:'辛 Yin Metal adalah 正官 (Direct Officer) bagi 甲 Yang Wood. 正官 melambangkan otoritas yang legitimate, struktur yang teratur, dan pengakuan dari sistem. Yang menarik, hari ini adalah resonansi langsung dengan Heavenly Stem Luck Pillar-mu (辛未) — energi hari ini adalah refleksi dari tema utama fase hidupmu saat ini: membangun karir yang diakui secara formal.',
+harmony:'Hari yang sangat selaras dengan tema Luck Pillar-mu. Karaktermu yang straight-forward dan determined sangat dihargai oleh sistem dan institusi hari ini. Kerja keras dan integritasmu mendapat sorotan yang positif.',
+conflict:'Terlalu banyak aturan, prosedur, dan ekspektasi formal bisa terasa membatasi. Waspada overthinking tentang "cara yang benar" hingga lupa bergerak. Perfeksionisme bisa menghambat progres hari ini.',
+career:'Hari terbaik untuk urusan resmi dan institusional: wawancara kerja, promosi, evaluasi kinerja, dokumen kontrak, atau pertemuan formal dengan atasan. Performamu dan reputasi profesional disorot — tampil yang terbaik.',
+health:'Energi tubuh stabil dan cukup. Metal dalam Bazi berhubungan dengan paru-paru dan sistem pernapasan — hari yang baik untuk olahraga aerobik ringan seperti jalan cepat atau bersepeda. Perhatikan kualitas udara yang kamu hirup hari ini.',
+finance:'Cocok untuk urusan finansial yang formal dan terstruktur: pengajuan kredit, tanda tangan kontrak, negosiasi gaji resmi, atau pembukaan rekening investasi. Dokumen dan legalitas finansial berjalan lancar hari ini.',
+romance:'Energi yang bertanggung jawab dan dapat diandalkan membuat pasangan atau orang yang kamu dekati merasa aman dan dihargai. Hari yang tepat untuk membicarakan hal-hal yang lebih serius — komitmen, rencana ke depan, atau hal yang selama ini dihindari.',
+avoid:['Membuat keputusan impulsif atau terlalu santai dalam hal-hal formal.','Mengabaikan detail administrasi — hari ini sangat peka terhadap hal-hal kecil.','Bersikap terlalu kaku dalam interaksi sosial yang seharusnya santai.'],
+hours:[{time:'07:00–09:00',label:'辰 Naga',act:'Urusan formal & dokumentasi',best:true},{time:'13:00–15:00',label:'未 Kambing',act:'Meeting resmi & evaluasi',best:true},{time:'11:00–13:00',label:'午 Kuda',act:'Presentasi & negosiasi gaji',best:false},{time:'17:00–19:00',label:'酉 Ayam',act:'Hindari — Metal clash dengan Kayu-mu',best:false}],
+affirmation:'Komitmenku pada integritas adalah <span>investasi jangka panjang</span> yang tidak pernah rugi. Aku membangun nama yang bertahan.',
+lpContext:'辛 hari ini adalah resonansi langsung dengan Heavenly Stem Luck Pillar-mu (辛未). Ini adalah "hari tematik" dalam fase hidupmu — semua energi hari ini menguatkan narasi utama yang sedang kamu jalani: membangun karir yang solid dan diakui. Jadikan hari ini sebagai cermin tentang seberapa jauh progresmu menuju tujuan jangka panjang.'},
+
+{score:4,energy:'Sungai besar 壬 Yang Water mengalir deras memberi minum pada pohon 甲 — namun pohon yang sudah terlalu basah kesulitan berbunga. Energi 偏印 Indirect Resource membawa intuisi tajam namun eksekusi yang melambat.',
+why:'壬 Yang Water adalah 偏印 bagi 甲 Yang Wood. Air menghasilkan Kayu dalam siklus Five Elements — jadi secara teori Air mendukung Wood. Tapi chartmu sudah sangat kuat di Kayu, dan penambahan Air membuat pohon tumbuh terlalu liar tanpa arah. 偏印 melambangkan intuisi dan pembelajaran tak konvensional — tapi terlalu banyak bisa menyebabkan overthinking dan prokrastinasi.',
+harmony:'Intuisi dan kepekaan batinmu sangat tajam hari ini. Hari yang excellent untuk refleksi mendalam, riset, perencanaan strategis jangka panjang, atau pembelajaran hal baru yang menarik minatmu.',
+conflict:'Terlalu banyak Air membuat pohon tumbuh ranting ke segala arah tanpa fokus. Waspada: banyak ide tapi sedikit eksekusi, prokrastinasi, atau terjebak dalam siklus riset tanpa tindakan nyata.',
+career:'Hari untuk berpikir dan merencanakan, bukan untuk eksekusi besar. Riset mendalam, analisis kompetitor, perencanaan strategi, atau belajar skill baru — semua ini sangat produktif hari ini. Tunda pitch dan presentasi penting.',
+health:'Sistem saraf cenderung overaktif hari ini — mudah overthinking atau anxiety yang tidak jelas sumbernya. Tidur berkualitas sangat penting malam ini. Meditasi, pernapasan dalam, atau journaling bisa membantu menenangkan arus pikiran.',
+finance:'Bukan hari untuk transaksi finansial besar. Gunakan waktu ini untuk riset investasi, membaca analisis pasar, atau merencanakan strategi finansial — tapi tunda eksekusinya.',
+romance:'Energi yang lebih introvert dan reflektif. Kamu mungkin lebih suka kedalaman daripada keramaian hari ini — percakapan yang bermakna dengan satu orang terpercaya lebih memuaskan daripada pertemuan sosial besar.',
+avoid:['Memaksa diri untuk produktif secara "tradisional" — hormati energi reflektif hari ini.','Mengambil keputusan besar berdasar intuisi saja tanpa data.','Overthinking tentang masa depan hingga melumpuhkan tindakan saat ini.'],
+hours:[{time:'03:00–05:00',label:'寅 Macan',act:'Meditasi pagi & perencanaan',best:true},{time:'07:00–09:00',label:'辰 Naga',act:'Riset & belajar mandiri',best:true},{time:'21:00–23:00',label:'亥 Babi',act:'Refleksi & journaling malam',best:false},{time:'11:00–13:00',label:'午 Kuda',act:'Hindari meeting penting',best:false}],
+affirmation:'Ketenangan batinku adalah <span>kompas terkuat</span> yang kupunya. Aku tidak perlu bergerak cepat untuk bergerak tepat.',
+lpContext:'Luck Pillar 辛未 — 辛 Metal menghasilkan 壬 Air dalam siklus Five Elements. Artinya Luck Pillar-mu secara tidak langsung menambah energi 偏印 hari ini. Gunakan dengan bijak: jadikan hari ini momen untuk mengisi ulang "reservoir pengetahuan" yang akan sangat berguna ketika hari-hari aktif (丙, 丁, 戊) datang kembali.'},
+
+{score:5,energy:'Hujan lembut 癸 Yin Water menyirami pohon 甲 dengan kebijaksanaan dan dukungan yang tulus. Energi 正印 Direct Resource membawa perlindungan, bimbingan, dan nutrisi bagi jiwa.',
+why:'癸 Yin Water adalah 正印 bagi 甲 Yang Wood. 正印 adalah Ten God yang paling nurturing — melambangkan ibu, guru, mentor, dan sumber kebijaksanaan. Energi ini mendukung akademis, pembelajaran formal, dan perlindungan dari figur yang lebih berpengalaman. Karena Water tetap menambah kekuatan Wood, hari ini energy-mu bisa sedikit terlalu ke dalam dan kurang ekspansif ke luar.',
+harmony:'Ketulusan dan kebaikanmu (kind) menarik dukungan dan perlindungan dari orang-orang yang lebih berpengalaman. Energi 正印 sangat mendukung pembelajaran akademis, pengembangan spiritual, dan refleksi yang mendalam.',
+conflict:'Ketergantungan berlebih pada validasi atau dukungan dari luar bisa menghambat kemandirianmu. Hari ini bukan untuk aksi solo — tapi juga jangan menunggu "restu" dari orang lain untuk bergerak.',
+career:'Hari terbaik untuk mencari bimbingan mentor atau senior, mengikuti workshop atau pelatihan, atau menyelesaikan pekerjaan yang membutuhkan penelitian mendalam. Hubungi atasan atau senior yang selama ini ingin kamu konsultasikan.',
+health:'Tubuh meminta istirahat dan recovery hari ini. Sistem limfatik dan imun sedang dalam fase penguatan — dukung dengan cukup air mineral, makanan bergizi, dan tidur yang lebih awal dari biasanya. Hindari paparan cuaca ekstrem.',
+finance:'Bukan hari untuk eksekusi finansial besar, tapi sangat baik untuk belajar tentang investasi, membaca buku keuangan, atau berkonsultasi dengan ahli finansial. Wisdom yang kamu dapatkan hari ini akan sangat bernilai ke depannya.',
+romance:'Figur yang mendukung dan melindungi hadir dalam energi hari ini. Terimalah kasih sayang dan perhatian dengan tulus — tidak perlu selalu kuat sendirian. Kalau ada orang yang peduli padamu, biarkan mereka hadir. Energi hari ini mendukung kedalaman emosional.',
+avoid:['Memaksakan diri untuk tampil aktif dan ekspansif — istirahat juga produktif.','Mengabaikan saran atau masukan dari orang yang lebih berpengalaman.','Begadang — tubuh dan pikiran butuh recovery quality malam ini.'],
+hours:[{time:'07:00–09:00',label:'辰 Naga',act:'Belajar, membaca & pengembangan diri',best:true},{time:'09:00–11:00',label:'巳 Ular',act:'Konsultasi mentor & diskusi mendalam',best:true},{time:'13:00–15:00',label:'未 Kambing',act:'Istirahat siang & refleksi',best:false},{time:'21:00–23:00',label:'亥 Babi',act:'Persiapan tidur awal — recovery',best:false}],
+affirmation:'Aku layak menerima cinta, dukungan, dan kebijaksanaan dari semesta. <span>Menerima dengan tulus</span> adalah bentuk kekuatan yang paling dalam.',
+lpContext:'Luck Pillar 辛未 — 辛 Metal menghasilkan 癸 Water, sama seperti hari 壬. Namun 癸 yang lembut lebih selaras dengan karakter kind-mu. Gunakan hari ini untuk memperkuat koneksi dengan mentor atau figur yang bisa membantumu di fase Luck Pillar saat ini — investasi dalam hubungan seperti ini akan sangat berbuah di masa depan.'},
+];
+
+const BN=[
+'⚠ 子 Tikus berbenturan dengan 午 Horse (Day Branch-mu). Waspada gangguan emosi mendadak atau rencana yang berubah tiba-tiba. Jaga ketenangan batin.',
+'✦ 丑 Kerbau adalah Nobleman Star-mu. Bantuan tak terduga dari kenalan atau tokoh berpengaruh bisa muncul hari ini.',
+'✦ 寅 Macan beresonansi dengan Prosperity Star dalam chartmu. Vitalitas bagus — cocok untuk aktivitas fisik dan memulai proyek baru.',
+'✦ 卯 Kelinci beresonansi dengan Year Branch-mu. Sword Star aktif — ketegasan, keberanian, dan kemampuan membela yang benar sangat tajam hari ini.',
+'⚠ 辰 Naga berbenturan dengan 戌 Dog (Month Branch-mu). Perhatikan kondisi kesehatan dan dinamika di lingkungan kerja.',
+'✦ 巳 Ular adalah Academic Star-mu. Kecerdasan dan daya analisa sangat tajam — hari terbaik untuk belajar, riset, dan menyelesaikan masalah kompleks.',
+'✦✦ 午 Kuda adalah Day Branch-mu sendiri dan Peach Blossom Star-mu. Resonansi personal sangat kuat — energimu paling autentik, daya tarik sosial dan romantis memuncak. Hari penuh kehidupan.',
+'✦ 未 Kambing adalah Nobleman Star-mu. Koneksi dan dukungan dari orang-orang yang tepat hadir hari ini. Beresonansi dengan Earthly Branch Luck Pillar aktifmu (辛未).',
+'◦ 申 Monyet berbenturan dengan 寅 Tiger (Prosperity Star-mu). Perjalanan dan mobilitas mungkin menemui hambatan — rencanakan pergerakan dengan cermat.',
+'⚠ 酉 Ayam berbenturan dengan 卯 Rabbit (Year Branch-mu). Potensi gesekan dengan rekan sebaya, saudara, atau orang seangkatan. Pilih kata dengan bijak.',
+'✦ 戌 Anjing beresonansi dengan Month Branch-mu. Lingkungan profesional terasa lebih kondusif dan supportive — bagus untuk kolaborasi.',
+'✦ 亥 Babi beresonansi dengan Hour Branch-mu. Pikiran, visi jangka panjang, dan intuisi dalam sangat tajam hari ini.',
+];
+
+const BSM=[-1.5,0.5,0,1,-0.5,0.5,2,0.5,-0.5,-1,0.5,0];
+
+/* ══ SECTION DETAIL GRID DATA ═══════════════════
+   Per stem: career[4], health[4], finance[4], romance[4]
+   Each cell: { ico, lbl, txt, accent, tag?, bar? }
+═══════════════════════════════════════════════ */
+const GD = [
+
+/* 0: 甲 比肩 Companion */
+{
+career:[
+  {ico:'⚔️',lbl:'Kompetisi Hari Ini',txt:'<p>Hari ini kamu sedang "dinilai" secara tidak langsung oleh lingkungan sekitarmu. Dua 甲 Wood di ladang yang sama artinya performamu dan performamu dibandingkan secara alami — entah kamu sadar atau tidak. Manfaatkan ini untuk menunjukkan kualitas terbaikmu, bukan untuk bersaing secara ego.</p>',accent:'gold'},
+  {ico:'🤝',lbl:'Tipe Pekerjaan Cocok',txt:'<p>Hari ini paling produktif untuk pekerjaan yang melibatkan <strong style="color:var(--gold)">kolaborasi setara</strong> — bukan hierarki. Diskusi brainstorming, peer review, atau project bersama dengan rekan yang se-level. Energi 比肩 berjalan paling lancar ketika dua pihak saling menghormati posisi yang sama.</p>',accent:'teal'},
+  {ico:'👔',lbl:'Dinamika dengan Atasan & Tim',txt:'<p>Dengan atasan: energi hari ini bisa terasa "tidak mau dikalahkan" — jaga sikap dan pilih kata hati-hati agar tidak terkesan menentang. Dengan tim: sangat kondusif untuk sesi diskusi terbuka, tapi pastikan semua punya kesempatan bicara, bukan hanya kamu.</p>',accent:'dim',wide:true},
+  {ico:'📋',lbl:'Fokus Aksi',txt:'<p>Selesaikan pekerjaan yang sudah berjalan. Jangan mulai proyek baru hari ini — energi 比肩 tidak mendukung inisiatif solo yang fresh. Lebih baik sempurnakan yang sudah ada.</p>',accent:'gold'},
+  {ico:'🚫',lbl:'Yang Harus Dihindari',txt:'<p>Negosiasi atau deal baru, keputusan impulsif karena melihat "saingan" bergerak, dan konfrontasi ego yang tidak perlu. Dua pohon bisa tumbuh berdampingan — tidak harus ada yang tumbang.</p>',accent:'red',tag:'warn'},
+  {ico:'💡',lbl:'Insight untuk Harimu',txt:'<p>Hari 比肩 mengajarkanmu satu hal penting: <strong style="color:var(--gold)">keberadaan orang yang setara denganmu bukan ancaman, tapi cermin.</strong> Apa yang kamu lihat pada mereka hari ini — apakah keunggulan, kelemahan, atau kesamaan — adalah refleksi dari dirimu sendiri yang sedang ingin kamu kembangkan.</p>',accent:'teal',wide:true},
+],
+health:[
+  {ico:'🌿',lbl:'Organ yang Perlu Perhatian',txt:'<p>Hati (Liver) dan Kantung Empedu adalah organ yang dikelola elemen Kayu. Ketika Kayu berlipat ganda seperti hari ini, kedua organ ini bekerja ekstra keras. Sinyal yang muncul: mudah frustrasi, mata lelah, atau otot kaku di pagi hari — semua ini adalah pesan tubuhmu.</p>',accent:'gold',bar:{pct:65,cls:'gold'}},
+  {ico:'⚡',lbl:'Level & Pola Energi',txt:'<p>Energimu terasa penuh di pagi hari tapi bisa tiba-tiba drop di sore hari karena dua sumber Kayu saling "berkompetisi". Rencanakan pekerjaan terpenting di rentang <strong style="color:var(--gold)">07:00–13:00</strong>, dan sisakan waktu lebih santai setelah jam 15:00.</p>',accent:'teal',bar:{pct:62,cls:'teal'}},
+  {ico:'🏃',lbl:'Aktivitas yang Dianjurkan',txt:'<p>Olahraga yang melibatkan gerakan dan koordinasi — lari ringan, bersepeda, atau olahraga tim. Hindari latihan yang sangat kompetitif karena bisa memperburuk energi 比肩 yang sudah tegang. Tujuannya adalah melepas, bukan menang.</p>',accent:'dim'},
+  {ico:'🍽️',lbl:'Makanan & Minuman Hari Ini',txt:'<p>Elemen Kayu yang dominan berarti tubuhmu butuh makanan yang <strong style="color:var(--gold)">menetralisir dan menenangkan Liver</strong>. Dianjurkan: sayuran hijau (bayam, brokoli), teh chamomile atau peppermint, dan makanan yang tidak terlalu berminyak. Hindari alkohol dan makanan pedas berlebihan — keduanya membebani Liver.</p>',accent:'teal',wide:true},
+  {ico:'🕐',lbl:'Chinese Body Clock — Jam Aktif',txt:'<p><strong style="color:var(--gold)">01:00–03:00</strong> adalah jam Liver dalam Chinese Body Clock — organ ini melakukan regenerasi di jam tersebut. Pastikan kamu sudah tidur sebelum tengah malam agar Liver dapat bekerja optimal. Kalau kamu sering terbangun di jam 1–3 pagi, itu sinyal Liver sedang kelebihan beban.</p>',accent:'gold'},
+  {ico:'⚠️',lbl:'Pantangan Kesehatan',txt:'<p>Hindari makan terburu-buru, begadang, dan paparan stres yang tidak perlu. Tiga hal ini langsung melemahkan sistem Liver-Empedu yang sudah bekerja keras hari ini.</p>',accent:'red',tag:'warn'},
+],
+finance:[
+  {ico:'📉',lbl:'Arus Rezeki',txt:'<p>Energi 比肩 cenderung "membelah" rezeki — seperti satu sumber air yang harus mengalir ke dua pohon sekaligus. Rezeki yang kamu hasilkan hari ini berpotensi harus "dibagi" dengan orang lain, baik secara literal maupun figuratif.</p>',accent:'gold',bar:{pct:38,cls:'red'}},
+  {ico:'📊',lbl:'Tipe Investasi yang Sesuai',txt:'<p>Hari ini bukan untuk membuka posisi baru. Tapi kalau kamu ingin melakukan sesuatu, fokuslah pada <strong style="color:var(--gold)">review portofolio yang sudah ada</strong> — evaluasi kinerja, bukan eksekusi baru. Investasi terbaik hari ini adalah waktu untuk riset dan pemahaman yang lebih dalam.</p>',accent:'dim'},
+  {ico:'🔒',lbl:'Proteksi Finansial',txt:'<p>Pastikan kamu tidak meminjamkan uang hari ini, dan berhati-hati dengan pengeluaran yang dipicu oleh "melihat orang lain beli sesuatu". Energi 比肩 sering memunculkan pengeluaran kompetitif yang tidak perlu — beli karena FOMO, bukan karena butuh.</p>',accent:'red',tag:'warn'},
+  {ico:'🔢',lbl:'Angka & Arah Beruntung',txt:'${makeCompass("SE","Tenggara (SE) — Arah Sukses Kua 1","Untuk urusan finansial hari ini, posisikan dirimu menghadap Tenggara. Angka beruntung: 3, 8 (angka elemen Kayu dalam numerologi Bazi).")}',accent:'teal',wide:true,raw:true},
+  {ico:'💡',lbl:'Insight Finansial',txt:'<p>Uang yang keluar hari ini besar kemungkinan adalah "investasi relasi" — kamu mentraktir, membantu, atau menanggung biaya orang lain. Anggap saja sebagai tabungan relasi jangka panjang, bukan kerugian.</p>',accent:'gold'},
+  {ico:'✅',lbl:'Satu Aksi Finansial Terbaik',txt:'<p>Lunasi satu kewajiban finansial yang sudah jatuh tempo atau hampir jatuh tempo. Membersihkan hutang di hari 比肩 memberikan "ruang napas" finansial yang akan terasa di hari-hari berikutnya.</p>',accent:'teal'},
+],
+romance:[
+  {ico:'🔥',lbl:'Vibrasi Relasi Hari Ini',txt:'<p>Pertemuan dengan seseorang yang "mirip banget" denganmu hari ini akan terasa sangat intens — bisa jadi koneksi yang sangat dalam, atau justru gesekan yang mengejutkan karena dua karakter kuat bertemu. Ini bukan kebetulan, ini sinyal dari energi hari ini.</p>',accent:'gold'},
+  {ico:'💬',lbl:'Cara Komunikasi Terbaik',txt:'<p>Komunikasi <strong style="color:var(--gold)">tatap muka langsung</strong> jauh lebih efektif dari chat atau pesan teks hari ini. Energi 比肩 butuh "melihat" lawan bicara untuk merasakan kesetaraan — pesan teks terlalu mudah disalahartikan dan memicu miskomunikasi hari ini.</p>',accent:'teal',wide:true},
+  {ico:'💎',lbl:'Kekuatan Relasi Hari Ini',txt:'<p>Jika bertemu seseorang yang benar-benar satu visi denganmu, koneksi yang terbentuk hari ini bisa sangat kuat dan tahan lama. Energi 比肩 menciptakan "chemistry instan" antara jiwa-jiwa yang setara.</p>',accent:'gold',tag:'good'},
+  {ico:'⚡',lbl:'Potensi Gesekan',txt:'<p>Dua orang yang sama-sama determined dan straight-forward bisa dengan mudah berubah dari diskusi menjadi debat. Sinyal bahaya: ketika kamu mulai merasa "aku yang benar" — mundur satu langkah, tarik napas, dan tanya: "apakah ini perlu diperdebatkan sekarang?"</p>',accent:'red',tag:'warn'},
+  {ico:'📍',lbl:'Lokasi & Aktivitas Ideal',txt:'<p>Aktivitas yang melibatkan <strong style="color:var(--gold)">gerakan dan alam terbuka</strong> sangat dianjurkan — hiking ringan, bersepeda bersama, atau sekadar jalan sore di taman. Energi Kayu butuh ruang dan alam untuk tetap harmonis. Hindari tempat yang ramai, bising, atau penuh kompetisi seperti game center.</p>',accent:'teal',wide:true},
+  {ico:'🕊️',lbl:'Insight untuk Relasi',txt:'<p>Orang yang hadir dalam hidupmu hari ini — entah teman lama yang tiba-tiba muncul atau kenalan baru yang terasa familiar — membawa pesan tentang sisi dirimu yang perlu diakui. Perhatikan apa yang kamu kagumi atau tidak suka dari mereka: itulah yang sedang kamu proses dalam dirimu sendiri.</p>',accent:'dim'},
+],},
+
+/* 1: 乙 劫财 Rob Wealth */
+{
+career:[
+  {ico:'🛡️',lbl:'Mode Hari Ini',txt:'<p>Hari ini adalah hari untuk <strong style="color:var(--gold)">bertahan dengan cerdas</strong>, bukan menyerang. Energi 劫财 bukan berarti kamu lemah — melainkan medan hari ini tidak menguntungkan untuk inisiatif besar. Seperti seorang prajurit yang tahu kapan harus bertahan di balik perisai.</p>',accent:'dim'},
+  {ico:'🔍',lbl:'Tipe Pekerjaan Cocok',txt:'<p>Pekerjaan <strong style="color:var(--gold)">koordinasi, support, dan administrasi</strong> berjalan paling baik hari ini. Membantu rekan, menyelesaikan backlog, atau mengerjakan tugas-tugas yang selama ini tertunda karena tidak sempat. Kontribusi yang "tidak terlihat besar" hari ini justru punya nilai tersendiri.</p>',accent:'teal'},
+  {ico:'👥',lbl:'Dinamika dengan Atasan & Tim',txt:'<p>Waspada dengan rekan yang tanpa sadar — atau dengan sadar — "menumpang" pada hasil kerjamu hari ini. Tidak perlu konfrontasi, tapi mulailah mendokumentasikan kontribusimu secara lebih jelas. Dengan atasan: hari ini bukan waktu yang tepat untuk minta kenaikan atau promosi.</p>',accent:'red',wide:true,tag:'warn'},
+  {ico:'🚫',lbl:'Yang Harus Dihindari',txt:'<p>Memulai proyek atau deal baru, menyetujui komitmen tambahan yang menguras tenaga, dan terlibat dalam diskusi yang tidak ada ujungnya. Energimu hari ini adalah sumber daya terbatas — alokasikan dengan sangat bijak.</p>',accent:'red'},
+  {ico:'📁',lbl:'Fokus Aksi',txt:'<p>Selesaikan satu pekerjaan penting yang sudah hampir tuntas. Kepuasan menyelesaikan sesuatu hari ini jauh lebih berharga daripada memulai sepuluh hal baru.</p>',accent:'gold'},
+  {ico:'💡',lbl:'Insight untuk Harimu',txt:'<p>Hari 劫财 adalah pengingat bahwa <strong style="color:var(--gold)">tidak semua energi perlu diberikan kepada dunia luar</strong>. Ada saatnya kamu perlu menjaga "cadangan" untuk dirimu sendiri. Batas bukan berarti egois — batas adalah bentuk self-respect yang paling dasar.</p>',accent:'teal',wide:true},
+],
+health:[
+  {ico:'🌿',lbl:'Organ yang Perlu Perhatian',txt:'<p>Hati, sistem imun, dan sistem pencernaan semuanya dalam kondisi "sedang tertekan" hari ini. Tanda-tandanya bisa berupa rasa lelah yang tidak proporsional dengan aktivitas, atau mood yang mudah berubah tanpa sebab yang jelas.</p>',accent:'gold',bar:{pct:42,cls:'red'}},
+  {ico:'🔋',lbl:'Level & Pola Energi',txt:'<p>Energi tidak stabil dan mudah terkuras — terutama setelah interaksi sosial yang intense. Jika kamu merasa tiba-tiba kelelahan setelah bertemu atau berbicara dengan seseorang tertentu hari ini, itu adalah sinyal bahwa orang tersebut sedang "menarik" energimu.</p>',accent:'red',bar:{pct:40,cls:'red'}},
+  {ico:'🧘',lbl:'Aktivitas yang Dianjurkan',txt:'<p>Yoga restoratif, meditasi 10–15 menit, atau sekadar berjalan kaki perlahan di alam terbuka. Tujuannya bukan membakar kalori — tapi mengisi ulang cadangan energi. Hindari olahraga kompetitif atau yang sangat menguras tenaga.</p>',accent:'dim'},
+  {ico:'🍵',lbl:'Makanan & Minuman Hari Ini',txt:'<p>Fokus pada makanan yang <strong style="color:var(--gold)">memperkuat sistem imun dan menenangkan pencernaan</strong>: jahe hangat, madu, sup sayuran, dan makanan fermentasi seperti yogurt atau kimchi dalam porsi kecil. Hindari kopi berlebihan dan makanan cepat saji — keduanya menguras energi yang sudah terbatas.</p>',accent:'teal',wide:true},
+  {ico:'🕐',lbl:'Chinese Body Clock — Jam Aktif',txt:'<p><strong style="color:var(--gold)">19:00–21:00</strong> adalah jam Perikardium (Pericardium) — organ pelindung jantung dalam TCM. Di jam ini tubuhmu paling butuh ketenangan dan kehangatan emosional. Habiskan waktu ini untuk hal-hal yang menenangkan: baca buku, ngobrol santai dengan orang yang kamu percaya, atau minum teh hangat.</p>',accent:'gold'},
+  {ico:'😴',lbl:'Pantangan Kesehatan',txt:'<p>Begadang adalah pantangan utama hari ini — tubuhmu membutuhkan recovery yang lebih panjang dari biasanya. Target tidur sebelum jam 22:30 untuk memberi sistem imunmu waktu regenerasi yang cukup.</p>',accent:'red',tag:'warn'},
+],
+finance:[
+  {ico:'📉',lbl:'Arus Rezeki',txt:'<p>Ini adalah hari dengan arus finansial yang paling "bocor" dalam siklus 10 hari. Bukan berarti kamu pasti rugi — tapi ada kecenderungan kuat untuk uang keluar lebih banyak dari yang masuk, seringkali melalui jalur yang tidak terduga.</p>',accent:'red',bar:{pct:22,cls:'red'}},
+  {ico:'📊',lbl:'Tipe Investasi yang Sesuai',txt:'<p>Tidak ada investasi yang ideal untuk dieksekusi hari ini. Namun ini waktu yang baik untuk <strong style="color:var(--gold)">evaluasi investasi yang sudah berjalan</strong> — apakah ada yang perlu di-rebalance atau dihentikan? Keputusan untuk keluar dari investasi yang buruk justru bisa menguntungkan di hari ini.</p>',accent:'dim'},
+  {ico:'🛡️',lbl:'Proteksi Finansial',txt:'<p>Jangan meminjamkan uang dalam jumlah apapun hari ini. Jika ada yang meminta bantuan finansial, kamu bisa berempati tanpa harus mengeluarkan uang — tawarkan bantuan dalam bentuk lain, atau tunda keputusan sampai hari yang lebih baik.</p>',accent:'red',tag:'warn'},
+  {ico:'🔢',lbl:'Angka & Arah Beruntung',txt:'${makeCompass("E","Timur (E) — Arah Kesehatan Kua 1","Hari ini fokus ke arah Timur untuk urusan yang berkaitan dengan perlindungan dan kesehatan. Angka: hindari transaksi di angka 4 dan 9 hari ini — keduanya berhubungan dengan elemen Metal yang clash dengan Wood-mu.")}',accent:'teal',wide:true,raw:true},
+  {ico:'💡',lbl:'Insight Finansial',txt:'<p>Pengeluaran yang terjadi hari ini kemungkinan besar adalah "biaya relasi" — mentraktir, membantu, atau menanggung sesuatu untuk orang lain. Catat semuanya, bukan untuk disesali, tapi untuk memahami pola: apakah ini pilihan sadar atau kebiasaan yang sudah terlalu sering terjadi?</p>',accent:'gold'},
+  {ico:'✅',lbl:'Satu Aksi Finansial Terbaik',txt:'<p>Audit pengeluaran bulan ini — cukup 10 menit. Lihat ke mana uangmu mengalir dan identifikasi satu "kebocoran" yang bisa kamu tutup mulai hari ini.</p>',accent:'dim'},
+],
+romance:[
+  {ico:'🌊',lbl:'Vibrasi Relasi Hari Ini',txt:'<p>Empatimu hari ini berada di level yang sangat tinggi — kamu bisa merasakan kondisi emosional orang lain bahkan sebelum mereka mengatakannya. Ini adalah anugerah, tapi juga bisa menjadi beban kalau kamu tidak punya batasan yang jelas antara perasaanmu dan perasaan orang lain.</p>',accent:'teal'},
+  {ico:'💬',lbl:'Cara Komunikasi Terbaik',txt:'<p>Komunikasi melalui <strong style="color:var(--gold)">tindakan kecil yang tulus</strong> jauh lebih berkesan hari ini daripada kata-kata yang panjang. Membuatkan minuman, mengirimkan pesan singkat yang thoughtful, atau sekadar hadir — itu lebih bermakna dari ungkapan yang elaborate.</p>',accent:'gold',wide:true},
+  {ico:'💝',lbl:'Kekuatan Relasi',txt:'<p>Kebaikan dan kepedulianmu yang genuine sangat terasa hari ini. Orang-orang di sekitarmu akan merasakan kehangatan dan ketulusan yang kamu pancarkan — bahkan tanpa kamu sadari.</p>',accent:'teal',tag:'good'},
+  {ico:'⚡',lbl:'Potensi Gesekan',txt:'<p>Waspada dinamika di mana satu pihak terus memberi dan pihak lain terus mengambil. Jika kamu merasa mulai lelah atau "kosong" setelah berinteraksi dengan seseorang hari ini — itu adalah sinyal penting yang perlu kamu dengarkan.</p>',accent:'red',tag:'warn'},
+  {ico:'📍',lbl:'Lokasi & Aktivitas Ideal',txt:'<p>Tempat yang <strong style="color:var(--gold)">tenang, nyaman, dan akrab</strong> — rumah, kafe favorit, atau taman kecil yang sudah kamu kenal. Bukan hari untuk eksplorasi tempat baru atau aktivitas yang penuh adrenalin. Kenyamanan dan familiaritas adalah energi yang kamu butuhkan hari ini.</p>',accent:'dim',wide:true},
+  {ico:'🤲',lbl:'Insight untuk Relasi',txt:'<p>Belajar untuk menerima dengan sama mudahnya kamu memberi adalah pelajaran terbesar hari ini. Jika seseorang ingin melakukan sesuatu untukmu hari ini — biarkan mereka. Itu adalah cara mereka mengekspresikan cinta, dan menolaknya justru bisa menyakiti mereka.</p>',accent:'gold'},
+],},
+
+/* 2: 丙 食神 Eating God */
+{
+career:[
+  {ico:'🌟',lbl:'Momentum Hari Ini',txt:'<p>Ini adalah hari di mana kata-katamu punya <strong style="color:var(--gold)">bobot dan daya tarik yang lebih besar dari biasanya</strong>. Ide yang sama persis, jika kamu sampaikan hari ini versus hari biasa, akan terdengar jauh lebih meyakinkan. Itu bukan kebetulan — itu energi 食神 yang bekerja untukmu.</p>',accent:'gold',tag:'good'},
+  {ico:'🎯',lbl:'Tipe Pekerjaan Cocok',txt:'<p>Semua pekerjaan yang melibatkan <strong style="color:var(--gold)">komunikasi, kreasi, dan ekspresi</strong>: presentasi, pitching, menulis proposal, membuat konten, mengajar, atau coaching. Jika pekerjaanmu melibatkan berbicara kepada orang lain — ini adalah harimu.</p>',accent:'teal'},
+  {ico:'🤝',lbl:'Dinamika dengan Atasan & Tim',txt:'<p>Energimu yang hangat dan natural hari ini membuat orang merasa nyaman dan terinspirasi di sekitarmu. Atasan akan mudah menyetujui ide yang kamu presentasikan. Tim akan termotivasi oleh cara kamu menyampaikan sesuatu. Gunakan momentum ini untuk hal-hal yang selama ini kamu tunda karena takut ditolak.</p>',accent:'teal',wide:true},
+  {ico:'💡',lbl:'Fokus Aksi',txt:'<p>Sampaikan ide terpentingmu hari ini. Jadwalkan meeting atau call yang selama ini tertunda. Kirimkan proposal yang sudah lama kamu siapkan. Momentum ini hanya hadir setiap 10 hari sekali.</p>',accent:'gold'},
+  {ico:'⏰',lbl:'Yang Harus Dihindari',txt:'<p>Menghabiskan hari ini untuk pekerjaan administratif yang bisa dikerjakan kapan saja. Energi 食神 yang terbuang untuk hal-hal rutin adalah pemborosan terbesar yang bisa kamu lakukan hari ini.</p>',accent:'red'},
+  {ico:'💡',lbl:'Insight untuk Harimu',txt:'<p>食神 mengajarkan bahwa <strong style="color:var(--gold)">ekspresi diri yang autentik adalah bentuk produktivitas tertinggi</strong>. Hari ini bukan tentang kerja keras — tapi tentang kerja yang mengalir natural dari dalam dirimu. Kalau sesuatu terasa dipaksakan hari ini, mungkin itu bukan yang seharusnya kamu kerjakan.</p>',accent:'teal',wide:true},
+],
+health:[
+  {ico:'❤️',lbl:'Organ yang Perlu Perhatian',txt:'<p>Jantung dan sistem sirkulasi darah berada dalam kondisi prima hari ini — elemen Api mendukung dan memperkuat organ-organ ini. Tubuhmu terasa lebih "hidup" dari biasanya, dan itu adalah sinyal positif yang bisa kamu manfaatkan.</p>',accent:'gold',bar:{pct:88,cls:'gold'}},
+  {ico:'⚡',lbl:'Level & Pola Energi',txt:'<p>Energi tinggi dan stabil sepanjang hari — tidak ada penurunan mendadak yang biasanya terjadi di sore hari. Manfaatkan ini dengan menjadwalkan aktivitas terpentingmu di rentang yang lebih lebar dari biasanya: pagi hingga petang semua kondusif.</p>',accent:'teal',bar:{pct:88,cls:'teal'}},
+  {ico:'🏋️',lbl:'Aktivitas yang Dianjurkan',txt:'<p>Ini adalah hari terbaik untuk olahraga intens yang selama ini kamu tunda. HIIT, lari jarak menengah, futsal, atau berenang. Tubuhmu siap dan sistem kardiovaskularmu mendukung. Kamu tidak akan merasa kepayahan seperti hari biasa.</p>',accent:'dim'},
+  {ico:'🍊',lbl:'Makanan & Minuman Hari Ini',txt:'<p>Elemen Api yang kuat hari ini mendukung metabolisme yang cepat. Manfaatkan dengan konsumsi <strong style="color:var(--gold)">makanan bernutrisi tinggi yang menghasilkan energi berkelanjutan</strong>: nasi merah, kacang-kacangan, buah citrus, dan protein lean. Tubuhmu bisa memproses nutrisi dengan lebih efisien hari ini. Minimalkan gula sederhana karena energi sudah cukup tinggi.</p>',accent:'teal',wide:true},
+  {ico:'🕐',lbl:'Chinese Body Clock — Jam Aktif',txt:'<p><strong style="color:var(--gold)">11:00–13:00</strong> adalah jam Jantung dalam Chinese Body Clock — dan ini bertepatan dengan Branch 午 (Horse/Api) yang juga merupakan Day Branch kelahiranmu. Ini menjadikan jam 11–13 sebagai <strong style="color:var(--gold)">jam paling powerful dalam harimu</strong> di hari 丙. Jadwalkan aktivitas terpentingmu di sini.</p>',accent:'gold'},
+  {ico:'⚠️',lbl:'Pantangan Kesehatan',txt:'<p>Jangan over-stimulasi dengan kafein berlebihan — energimu sudah sangat tinggi dan menambah stimulan justru bisa membuatmu sulit tidur malam ini. Pastikan kamu tetap terhidrasi karena aktivitas tinggi meningkatkan kebutuhan air.</p>',accent:'dim'},
+],
+finance:[
+  {ico:'📈',lbl:'Arus Rezeki',txt:'<p>Rezeki hari ini mengalir dari <strong style="color:var(--gold)">ekspresi dan kreativitasmu</strong> — bukan dari kerja keras fisik. Artinya, peluang finansial terbesar hari ini datang dari kemampuanmu berkomunikasi, meyakinkan, dan menunjukkan nilai dirimu kepada orang yang tepat.</p>',accent:'teal',bar:{pct:82,cls:'teal'}},
+  {ico:'💼',lbl:'Tipe Peluang Finansial',txt:'<p>Negosiasi gaji atau rate, pitching proyek freelance, closing sales, atau mempresentasikan proposal bisnis — semua ini sangat ideal dilakukan hari ini. Kemampuan persuasimu sedang di puncak, dan orang lebih mudah mengatakan "ya" pada hari 食神.</p>',accent:'gold',tag:'good'},
+  {ico:'⚠️',lbl:'Yang Perlu Diwaspadai',txt:'<p>Mood yang sangat baik hari ini bisa membuatmu impulsif dalam pengeluaran — "hari bagus, ayo belanja". Nikmati momen ini tapi tetap pertahankan kesadaran finansialmu. Rezeki yang masuk hari ini lebih baik diinvestasikan, bukan langsung dihabiskan.</p>',accent:'red'},
+  {ico:'🔢',lbl:'Angka & Arah Beruntung',txt:'${makeCompass("S","Selatan (S) — Arah Cinta & Kreativitas Kua 1","Untuk urusan finansial yang melibatkan presentasi atau negosiasi hari ini, posisikan menghadap Selatan. Angka beruntung: 2, 7 (angka elemen Api dalam numerologi Bazi). Warna merah atau oranye pada pakaian hari ini mendukung energi 丙.")}',accent:'teal',wide:true,raw:true},
+  {ico:'💡',lbl:'Insight Finansial',txt:'<p>Investasi terbaik yang bisa kamu lakukan hari ini adalah investasi pada <strong style="color:var(--gold)">kemampuan presentasi dan komunikasimu</strong> — beli buku, ikuti webinar, atau minta feedback tentang cara kamu menyampaikan ide. Skill ini adalah aset yang menghasilkan returns untuk seumur hidup.</p>',accent:'gold'},
+  {ico:'✅',lbl:'Satu Aksi Finansial Terbaik',txt:'<p>Kirimkan satu proposal, penawaran, atau negosiasi yang selama ini kamu tunda karena takut. Hari ini kemungkinan mendapat respons positif jauh lebih tinggi dari biasanya.</p>',accent:'teal'},
+],
+romance:[
+  {ico:'☀️',lbl:'Vibrasi Relasi Hari Ini',txt:'<p>Kamu memancarkan kehangatan yang sangat autentik hari ini — bukan karena kamu berusaha, tapi karena itulah energi alami 食神. Orang di sekitarmu merasakannya, dan itu membuat mereka naturally tertarik untuk dekat denganmu.</p>',accent:'gold'},
+  {ico:'💬',lbl:'Cara Komunikasi Terbaik',txt:'<p>Bicara langsung dan natural adalah cara terbaikmu hari ini. Jangan over-plan apa yang ingin kamu katakan — biarkan kata-kata mengalir begitu saja. Kejujuran spontan hari ini jauh lebih menarik dari kalimat yang sudah disiapkan berhari-hari sebelumnya.</p>',accent:'teal',wide:true},
+  {ico:'🌹',lbl:'Momen Terbaik untuk Relasi',txt:'<p>Jika kamu ingin mengungkapkan perasaan, minta maaf, atau mempererat koneksi — <strong style="color:var(--gold)">lakukan hari ini</strong>. Energi 食神 membuat ekspresi emosionalmu terdengar genuine dan menyentuh. Kata yang sama persis akan terasa jauh lebih tulus hari ini dibanding hari lain.</p>',accent:'gold',tag:'good'},
+  {ico:'🎭',lbl:'Potensi Gesekan',txt:'<p>Satu-satunya potensi masalah adalah terlalu banyak bicara dan kurang mendengarkan. Energi 食神 bisa membuatmu terlena mengekspresikan diri hingga lupa bahwa relasi yang baik adalah percakapan dua arah.</p>',accent:'red'},
+  {ico:'📍',lbl:'Lokasi & Aktivitas Ideal',txt:'<p>Tempat-tempat yang <strong style="color:var(--gold)">hidup, penuh energi positif, dan memungkinkan interaksi natural</strong>: kedai kopi yang cozy, pasar seni, konser akustik, atau makan malam di tempat dengan suasana hangat. Hindari tempat yang terlalu sunyi atau isolatif — energimu hari ini butuh ruang untuk diekspresikan.</p>',accent:'teal',wide:true},
+  {ico:'💡',lbl:'Insight untuk Relasi',txt:'<p>食神 mengajarkan bahwa cinta yang paling tahan lama bukan yang paling dramatis, tapi yang paling <strong style="color:var(--gold)">autentik dan menyenangkan</strong>. Hari ini adalah pengingat untuk tidak terlalu serius dalam relasi — tertawa bersama, berbagi kegembiraan, dan nikmati momennya.</p>',accent:'dim'},
+],},
+
+/* 3: 丁 伤官 Hurting Officer */
+{
+career:[
+  {ico:'💥',lbl:'Momentum Hari Ini',txt:'<p>Ini bukan hari untuk bekerja dalam "mode normal". 伤官 adalah energi yang <strong style="color:var(--gold)">memaksa sistem untuk berevolusi</strong>. Jika kamu selama ini merasa ada yang salah dengan cara suatu hal dikerjakan — hari ini kamu punya kejelasan, keberanian, dan kata-kata yang tepat untuk mengubahnya.</p>',accent:'gold',tag:'good'},
+  {ico:'🧪',lbl:'Tipe Pekerjaan Cocok',txt:'<p>Inovasi, problem-solving tidak konvensional, negosiasi yang membutuhkan kecerdasan tinggi, debat, analisis kritis, atau pekerjaan kreatif yang membutuhkan "genius spark". Jika pekerjaanmu membutuhkan kamu untuk berpikir di luar jalur — ini adalah harimu yang paling potensial dalam 60 hari.</p>',accent:'teal'},
+  {ico:'👔',lbl:'Dinamika dengan Atasan & Tim',txt:'<p>Dengan atasan: hati-hati, karena 伤官 secara simbolis "melukai otoritas" — kamu bisa dengan tidak sengaja terdengar menantang atau meremehkan. Sampaikan ide brillianmu dengan framing yang menghargai mereka. Dengan tim: kamu akan menjadi katalis yang luar biasa — ide-idemu hari ini bisa menginspirasi seluruh kelompok.</p>',accent:'red',wide:true},
+  {ico:'🚀',lbl:'Fokus Aksi',txt:'<p>Pecahkan satu masalah besar yang selama ini dianggap tidak bisa dipecahkan. Buat proposal yang sama sekali baru dan berbeda dari yang biasanya. Hari ini adalah hari untuk melakukan hal yang membuat orang berkata "kok bisa kepikiran sampai situ?"</p>',accent:'gold'},
+  {ico:'🎭',lbl:'Yang Harus Dihindari',txt:'<p>Konfrontasi langsung dengan figur otoritas tanpa persiapan yang matang. Energi 伤官 bisa membuat lidahmu terlalu tajam dan kata-katamu terlalu jujur — sehingga menyakiti tanpa disengaja.</p>',accent:'red',tag:'warn'},
+  {ico:'💡',lbl:'Insight untuk Harimu',txt:'<p>伤官 adalah anugerah yang sering disalahpahami. Orang-orang dengan 伤官 kuat sering dianggap "sulit diatur" — padahal mereka hanya <strong style="color:var(--gold)">terlalu cerdas untuk menerima hal yang tidak masuk akal begitu saja</strong>. Hari ini adalah hari untuk merangkul sifat itu, bukan menyembunyikannya.</p>',accent:'teal',wide:true},
+],
+health:[
+  {ico:'🧠',lbl:'Organ yang Perlu Perhatian',txt:'<p>Sistem saraf dan jantung keduanya bekerja pada kapasitas tertinggi hari ini. Tanda-tanda bahwa kamu sedang "overdrive": pikiran yang tidak bisa berhenti, sulit berkonsentrasi pada satu hal, atau rasa gelisah tanpa sebab yang jelas.</p>',accent:'gold',bar:{pct:82,cls:'gold'}},
+  {ico:'⚡',lbl:'Level & Pola Energi',txt:'<p>Energi mental sangat tinggi tapi bisa tidak merata — kamu bisa masuk ke kondisi "hyper-focus" yang sangat produktif, tapi juga bisa tiba-tiba crash setelah itu. Kenali pola ini dan rencanakan waktu istirahat aktif di antara sesi kerja intensmu.</p>',accent:'teal',bar:{pct:80,cls:'teal'}},
+  {ico:'🧘',lbl:'Aktivitas yang Dianjurkan',txt:'<p>Aktivitas yang menyeimbangkan pikiran aktif dengan tubuh yang bergerak: yoga aliran (vinyasa), tai chi, atau berenang dengan ritme yang tenang. Tujuannya adalah menurunkan aktivitas sistem saraf dari "high alert" ke "rest and digest" secara gradual.</p>',accent:'dim'},
+  {ico:'🫖',lbl:'Makanan & Minuman Hari Ini',txt:'<p>Sistem saraf yang aktif membutuhkan <strong style="color:var(--gold)">makanan yang menenangkan dan stabilizing</strong>: magnesium tinggi (dark chocolate kualitas baik, kacang almond, bayam), omega-3 (ikan salmon atau sarden), dan teh chamomile atau lavender di malam hari. Jauhkan diri dari energy drink dan minuman berkafein tinggi setelah jam 14:00.</p>',accent:'teal',wide:true},
+  {ico:'🕐',lbl:'Chinese Body Clock — Jam Aktif',txt:'<p><strong style="color:var(--gold)">11:00–13:00</strong> adalah jam Jantung — puncak aktivitas elemen Api. Energimu secara organik berada di titik tertinggi di jam ini. Tapi ingat: setelah puncak selalu ada lembah. Jadwalkan aktivitas yang lebih santai setelah jam 15:00 untuk recovery alami.</p>',accent:'gold'},
+  {ico:'😴',lbl:'Pantangan Kesehatan',txt:'<p>Layar HP setelah jam 21:00 dan percakapan yang emosional atau stimulating menjelang tidur adalah musuh utamamu malam ini. Sistem sarafmu butuh "runway" yang panjang untuk bisa benar-benar rileks — mulai wind-down ritual lebih awal dari biasanya.</p>',accent:'red',tag:'warn'},
+],
+finance:[
+  {ico:'🔮',lbl:'Arus Rezeki',txt:'<p>Intuisi finansialmu hari ini seperti radar yang sangat sensitif — kamu bisa "merasakan" peluang dan risiko sebelum angka-angkanya bicara. Percayai insting ini, tapi tetap verifikasi dengan data sebelum eksekusi.</p>',accent:'teal',bar:{pct:78,cls:'teal'}},
+  {ico:'💡',lbl:'Tipe Peluang Finansial',txt:'<p>Peluang yang <strong style="color:var(--gold)">tidak konvensional dan tidak terlihat jelas</strong> oleh orang lain — itulah spesialisasimu hari ini. Ide bisnis yang "gila" yang terlintas hari ini layak dicatat serius dan dievaluasi kemudian. Banyak breakthrough finansial dimulai dari ide 伤官 yang awalnya dianggap terlalu berani.</p>',accent:'gold',tag:'good'},
+  {ico:'📊',lbl:'Tipe Investasi yang Sesuai',txt:'<p>Jika ingin berinvestasi, 伤官 cocok untuk aset yang <strong style="color:var(--gold)">disruptive dan high-risk high-reward</strong> — crypto tertentu, startup early-stage, atau investasi di skill yang tidak umum. Tapi ingat: kalkulasi tetap harus lebih kuat dari intuisi.</p>',accent:'dim'},
+  {ico:'🔢',lbl:'Angka & Arah Beruntung',txt:'${makeCompass("S","Selatan (S) — Arah Cinta & Api Kua 1","Untuk eksekusi finansial yang penting hari ini, hadap Selatan. Angka beruntung: 2, 7 (Api). Hindari mengeksekusi deal di jam Metal: 15:00–19:00 (申酉時) — Metal clash dengan Wood-mu sangat terasa di jam tersebut.")}',accent:'teal',wide:true,raw:true},
+  {ico:'💡',lbl:'Insight Finansial',txt:'<p>Kemampuan berpikirmu yang tidak konvensional hari ini adalah aset finansial terbesar. Orang yang bisa melihat apa yang orang lain tidak lihat adalah orang yang paling bisa menciptakan nilai di pasar.</p>',accent:'gold'},
+  {ico:'✅',lbl:'Satu Aksi Finansial Terbaik',txt:'<p>Catat semua ide bisnis atau finansial yang terlintas hari ini — bahkan yang terdengar "gila" sekalipun. Revisit catatan ini dalam 3 hari ketika energimu lebih stabil dan lihat mana yang masih masuk akal.</p>',accent:'teal'},
+],
+romance:[
+  {ico:'🕯️',lbl:'Vibrasi Relasi Hari Ini',txt:'<p>Ada aura yang berbeda darimu hari ini — sesuatu yang intens, mendalam, dan sedikit misterius yang sulit dijelaskan tapi sangat terasa oleh orang-orang di sekitarmu. Ini bukan sesuatu yang kamu buat-buat; ini adalah energi 伤官 yang sedang aktif penuh.</p>',accent:'gold'},
+  {ico:'💬',lbl:'Cara Komunikasi Terbaik',txt:'<p>Percakapan yang <strong style="color:var(--gold)">mendalam dan jujur</strong> adalah mode komunikasimu yang paling powerful hari ini. Bukan small talk, bukan basa-basi — tapi diskusi tentang hal-hal yang benar-benar penting. Orang yang tepat akan sangat menghargai kedalaman ini; orang yang salah akan merasa "overwhelmed".</p>',accent:'teal',wide:true},
+  {ico:'✨',lbl:'Kekuatan Relasi',txt:'<p>Kecerdasan dan cara pandangmu yang unik adalah daya tarik terkuat hari ini. Percakapan yang kamu ciptakan hari ini bisa menjadi momen yang diingat oleh pasangan atau orang yang kamu dekati untuk waktu yang sangat lama.</p>',accent:'gold',tag:'good'},
+  {ico:'🔪',lbl:'Potensi Gesekan',txt:'<p>Kejujuranmu yang tajam bisa menyakiti tanpa disengaja hari ini. Sebelum mengucapkan sesuatu yang "jujur tapi pedas", tanya dirimu: "Apakah ini membangun atau hanya memuaskan keinginanku untuk benar?" Pilih satu.</p>',accent:'red',tag:'warn'},
+  {ico:'📍',lbl:'Lokasi & Aktivitas Ideal',txt:'<p>Tempat yang <strong style="color:var(--gold)">menstimulasi pikiran sekaligus menciptakan intimasi</strong>: museum, pameran seni, planetarium, rooftop di malam hari, atau kedai buku yang nyaman. Aktivitas yang memungkinkan percakapan mendalam lebih berkesan hari ini daripada aktivitas yang sekedar "seru".</p>',accent:'teal',wide:true},
+  {ico:'💡',lbl:'Insight untuk Relasi',txt:'<p>伤官 dalam konteks asmara mengajarkan bahwa <strong style="color:var(--gold)">cinta yang nyata tidak butuh topeng</strong>. Orang yang benar-benar cocok denganmu adalah orang yang tidak membuat kamu menyembunyikan kecerdasanmu — tapi justru terinspirasi olehnya.</p>',accent:'dim'},
+],},
+
+/* 4: 戊 偏财 Indirect Wealth */
+{
+career:[
+  {ico:'🌐',lbl:'Momentum Hari Ini',txt:'<p>Hari ini kamu adalah <strong style="color:var(--gold)">magnet alami</strong> — orang-orang, peluang, dan koneksi gravitasi ke arahmu tanpa perlu kamu berusaha keras. Manfaatkan ini bukan hanya untuk kepentingan profesional, tapi juga untuk membangun jaringan yang akan bermanfaat jangka panjang.</p>',accent:'gold',tag:'good'},
+  {ico:'🤝',lbl:'Tipe Pekerjaan Cocok',txt:'<p>Sales, business development, networking, negosiasi deal, pitching investor, atau membangun partnership strategis. Semua pekerjaan yang melibatkan <strong style="color:var(--gold)">mempertemukan dua pihak untuk menciptakan nilai</strong> berjalan sangat baik hari ini.</p>',accent:'teal'},
+  {ico:'👥',lbl:'Dinamika dengan Atasan & Tim',txt:'<p>Hari yang sangat baik untuk "menjual dirimu" ke atasan — bukan dengan cara yang norak, tapi dengan menunjukkan inisiatif dan koneksi yang kamu miliki. Tim akan melihatmu sebagai connector yang berharga hari ini. Kalau ada konflik dalam tim, kamu adalah orang yang paling bisa menjadi mediator yang efektif.</p>',accent:'teal',wide:true},
+  {ico:'📞',lbl:'Fokus Aksi',txt:'<p>Hubungi tiga kontak yang sudah lama tidak kamu sapa. Bukan untuk kepentingan langsung — tapi untuk memperbarui relasi. Koneksi yang kamu rawat hari ini bisa menjadi pintu yang sangat penting di masa depan.</p>',accent:'gold'},
+  {ico:'🚫',lbl:'Yang Harus Dihindari',txt:'<p>Mengabaikan follow-up setelah interaksi yang menjanjikan hari ini. Peluang yang datang di hari 偏财 memiliki "masa kadaluarsa" — kalau tidak ditindaklanjuti dalam 24-48 jam, momentumnya menghilang.</p>',accent:'red'},
+  {ico:'💡',lbl:'Insight untuk Harimu',txt:'<p>偏财 mengajarkan bahwa <strong style="color:var(--gold)">kekayaan sejati bukan tentang apa yang kamu miliki, tapi tentang koneksi apa yang kamu punya</strong>. Orang yang paling kaya bukan yang paling banyak uangnya, tapi yang paling banyak orang yang ingin membantunya ketika ia membutuhkan sesuatu.</p>',accent:'teal',wide:true},
+],
+health:[
+  {ico:'💪',lbl:'Organ yang Perlu Perhatian',txt:'<p>Lambung, limpa, dan sistem otot semuanya dalam kondisi optimal hari ini — elemen Tanah 戊 adalah pengatur dari semua organ ini dalam TCM. Kamu mungkin merasa lebih kuat, lebih bertenaga, dan lebih "grounded" dari biasanya.</p>',accent:'gold',bar:{pct:82,cls:'gold'}},
+  {ico:'⚡',lbl:'Level & Pola Energi',txt:'<p>Energi stabil dan merata sepanjang hari — tidak ada puncak atau lembah yang ekstrem. Ini adalah jenis energi terbaik untuk aktivitas yang butuh stamina dan konsistensi, bukan untuk sprint pendek yang intens.</p>',accent:'teal',bar:{pct:80,cls:'teal'}},
+  {ico:'🌳',lbl:'Aktivitas yang Dianjurkan',txt:'<p>Aktivitas outdoor dan sosial: hiking grup, olahraga tim, atau aktivitas di alam terbuka. Elemen Tanah 戊 sangat terkoneksi dengan bumi — semakin dekat kakimu dengan tanah dan alam, semakin terisi energimu.</p>',accent:'dim'},
+  {ico:'🥗',lbl:'Makanan & Minuman Hari Ini',txt:'<p>Elemen Tanah yang kuat hari ini mendukung pencernaan yang optimal. Konsumsi makanan yang <strong style="color:var(--gold)">bergizi dan berwarna-warni</strong> — sayuran beragam warna, protein lengkap, dan karbohidrat kompleks. Ini adalah hari yang baik untuk mencoba makanan baru yang sehat. Hindari makan berlebihan meski selera sedang tinggi — sistem pencernaanmu aktif tapi tidak berarti tanpa batas.</p>',accent:'teal',wide:true},
+  {ico:'🕐',lbl:'Chinese Body Clock — Jam Aktif',txt:'<p><strong style="color:var(--gold)">07:00–09:00</strong> adalah jam Lambung dalam Chinese Body Clock — sarapan di jam ini sangat penting hari ini, dan nutrisi yang kamu makan di jam ini akan diserap dengan efisiensi tertinggi. Jangan lewatkan sarapan bergizi di jam ini.</p>',accent:'gold'},
+  {ico:'⚠️',lbl:'Pantangan Kesehatan',txt:'<p>Makan berlebihan adalah pantangan utama di hari Tanah. Selera makanmu mungkin meningkat, tapi tubuhmu tidak butuh sebanyak itu. Makan perlahan, kunyah dengan baik, dan berhenti sebelum kenyang penuh.</p>',accent:'dim'},
+],
+finance:[
+  {ico:'💰',lbl:'Arus Rezeki',txt:'<p>Rezeki datang dari arah yang tidak kamu duga hari ini — bukan dari sumber utamamu, tapi dari koneksi, peluang sampingan, atau pertemuan tak terduga yang membuka pintu baru. Tetap buka mata dan telinga sepanjang hari.</p>',accent:'gold',bar:{pct:85,cls:'gold'}},
+  {ico:'📊',lbl:'Tipe Investasi yang Sesuai',txt:'<p>偏财 adalah energi investasi yang paling aktif dalam Bazi. Cocok untuk: <strong style="color:var(--gold)">saham pertumbuhan, bisnis sampingan, investasi properti</strong>, atau apapun yang melibatkan ekspansi dan pengambilan risiko yang terkalkulasi. Ini bukan hari untuk instrumen konservatif seperti deposito.</p>',accent:'teal',tag:'good'},
+  {ico:'⚡',lbl:'Yang Perlu Diwaspadai',txt:'<p>Energi yang sangat baik hari ini bisa menciptakan overconfidence finansial. "Hari ini saja" adalah kalimat yang paling berbahaya — pengeluaran impulsif yang dijustifikasi dengan mood baik bisa menghapus semua rezeki yang masuk.</p>',accent:'red',tag:'warn'},
+  {ico:'🔢',lbl:'Angka & Arah Beruntung',txt:'${makeCompass("SE","Tenggara (SE) — Arah Sukses Utama Kua 1","Arah terpenting untuk Kua 1 dalam urusan finansial dan bisnis. Untuk meeting atau negosiasi penting hari ini, usahakan posisi duduk menghadap atau dengan pintu di arah Tenggara. Angka beruntung: 5, 10 (angka elemen Tanah). Warna kuning atau oranye mendukung energi 戊 hari ini.")}',accent:'teal',wide:true,raw:true},
+  {ico:'💡',lbl:'Insight Finansial',txt:'<p>Orang yang kamu temui hari ini bisa lebih berharga dari jumlah uang manapun. Satu koneksi yang tepat di hari 偏财 bisa membuka peluang yang nilainya jauh melampaui semua investasi finansial yang kamu miliki.</p>',accent:'gold'},
+  {ico:'✅',lbl:'Satu Aksi Finansial Terbaik',txt:'<p>Kirimkan satu penawaran atau proposal ke seseorang yang selama ini kamu pertimbangkan untuk diajak kerjasama. Momentum hari ini mendukung respons positif.</p>',accent:'teal'},
+],
+romance:[
+  {ico:'🌟',lbl:'Vibrasi Relasi Hari Ini',txt:'<p>Ada energi yang sangat ekspansif dan menarik darimu hari ini — kepercayaan dirimu natural, sikapmu terbuka, dan cara kamu hadir dalam percakapan membuat orang-orang ingin terus berada di dekatmu. Ini bukan performance; ini adalah versi terbaikmu yang muncul secara organik.</p>',accent:'gold'},
+  {ico:'💬',lbl:'Cara Komunikasi Terbaik',txt:'<p>Komunikasi yang <strong style="color:var(--gold)">proaktif dan generous</strong> — jadilah orang yang memulai percakapan, yang pertama mengapresiasi, yang pertama mengajak. Energi 偏财 berjalan paling indah ketika kamu menjadi "pemberi" dalam interaksi, bukan "penunggu".</p>',accent:'teal',wide:true},
+  {ico:'💎',lbl:'Kekuatan Relasi',txt:'<p>Pengalaman dan momen yang kamu ciptakan hari ini jauh lebih bernilai dari materi apapun. Membawa seseorang ke tempat yang tidak terduga, merencanakan kejutan kecil yang thoughtful, atau sekedar memberikan perhatian penuh dalam percakapan — hal-hal kecil ini punya dampak besar hari ini.</p>',accent:'gold',tag:'good'},
+  {ico:'💸',lbl:'Potensi Gesekan',txt:'<p>Jangan jadikan kemampuan finansial atau status sosial sebagai topik atau alat dalam interaksi romantis hari ini. Energi 偏财 bisa mengundang dinamika yang superfisial kalau tidak dikelola dengan kesadaran.</p>',accent:'red'},
+  {ico:'📍',lbl:'Lokasi & Aktivitas Ideal',txt:'<p>Tempat yang <strong style="color:var(--gold)">memiliki energi hidup dan kemungkinan pertemuan tak terduga</strong>: pasar seni, festival kuliner, taman kota yang ramai, atau event komunitas. Energi 偏财 suka kejutan dan spontanitas — rencanakan sedikit, tapi biarkan pengalaman mengalir.</p>',accent:'teal',wide:true},
+  {ico:'💡',lbl:'Insight untuk Relasi',txt:'<p>偏财 mengajarkan bahwa <strong style="color:var(--gold)">keberuntungan dalam cinta bukan tentang menemukan orang yang sempurna, tapi tentang menjadi orang yang siap ketika kesempatan itu datang</strong>. Hari ini kamu adalah versi dirimu yang paling siap.</p>',accent:'dim'},
+],},
+
+/* 5: 己 正财 Direct Wealth */
+{
+career:[
+  {ico:'🏗️',lbl:'Momentum Hari Ini',txt:'<p>Hari ini adalah tentang <strong style="color:var(--gold)">membangun dengan sabar</strong> — setiap bata yang kamu letakkan hari ini adalah bagian dari fondasi yang akan menopang pencapaian besar di masa depan. Tidak spektakuler, tidak dramatis — tapi sangat penting.</p>',accent:'gold'},
+  {ico:'📋',lbl:'Tipe Pekerjaan Cocok',txt:'<p>Pekerjaan yang membutuhkan <strong style="color:var(--gold)">ketekunan, presisi, dan perhatian terhadap detail</strong>: laporan keuangan, dokumentasi proyek, review quality, analisis data, atau pekerjaan administratif yang sudah lama tertunda. Energi 正财 menghargai hal-hal yang dikerjakan dengan teliti.</p>',accent:'teal'},
+  {ico:'👔',lbl:'Dinamika dengan Atasan & Tim',txt:'<p>Dengan atasan: hari yang sangat baik untuk menunjukkan track record dan konsistensimu — bukan dengan kata-kata, tapi dengan hasil kerja yang solid. Dengan tim: kamu adalah orang yang paling reliable dan dapat diandalkan hari ini — manfaatkan posisi ini untuk memperkuat kepercayaan yang sudah ada.</p>',accent:'dim',wide:true},
+  {ico:'📑',lbl:'Fokus Aksi',txt:'<p>Pilih satu pekerjaan penting yang sudah hampir selesai dan tuntas-kan hari ini. Kepuasan dari menyelesaikan sesuatu secara sempurna di hari 正财 memberikan momentum positif yang akan terbawa ke hari-hari berikutnya.</p>',accent:'gold'},
+  {ico:'⏩',lbl:'Yang Harus Dihindari',txt:'<p>Terburu-buru dan melewatkan detail. Energi 正财 sangat sensitif terhadap ketidaktepatan — kesalahan kecil yang terjadi di hari ini cenderung memiliki konsekuensi yang lebih besar dari biasanya.</p>',accent:'red'},
+  {ico:'💡',lbl:'Insight untuk Harimu',txt:'<p>正财 mengajarkan nilai <strong style="color:var(--gold)">konsistensi yang invisible</strong> — pekerjaan yang tidak ada yang melihat tapi selalu ada yang merasakan hasilnya. Orang-orang yang paling sukses dalam jangka panjang adalah mereka yang bisa menghargai hari-hari seperti ini: tidak glamor, tapi sangat fundamental.</p>',accent:'teal',wide:true},
+],
+health:[
+  {ico:'🌿',lbl:'Organ yang Perlu Perhatian',txt:'<p>Lambung, limpa, dan pankreas adalah organ elemen Tanah yang dikelola oleh 己. Hari ini sangat baik untuk menjaga ritme makan yang teratur — tubuhmu merespons sangat positif terhadap konsistensi dan predictability hari ini.</p>',accent:'gold',bar:{pct:72,cls:'gold'}},
+  {ico:'🔋',lbl:'Level & Pola Energi',txt:'<p>Energi terasa stabil seperti lilin yang terbakar dengan merata — bukan api unggun yang menyala besar tapi cepat habis. Manfaatkan ini untuk pekerjaan yang membutuhkan fokus panjang dan konsisten, bukan untuk sprint intens yang memerlukan ledakan energi.</p>',accent:'teal',bar:{pct:70,cls:'teal'}},
+  {ico:'🧘',lbl:'Aktivitas yang Dianjurkan',txt:'<p>Olahraga dengan ritme yang stabil dan terukur: jalan kaki 30-45 menit, bersepeda santai, atau renang dengan kecepatan konstan. Stretching pagi selama 10 menit sebelum mulai hari adalah ritual terbaik untuk hari 己.</p>',accent:'dim'},
+  {ico:'🥙',lbl:'Makanan & Minuman Hari Ini',txt:'<p>Makanan yang <strong style="color:var(--gold)">mudah dicerna, bergizi seimbang, dan tidak ekstrem</strong> dalam rasa. Hindari makanan yang terlalu pedas, terlalu manis, atau terlalu berat. Nasi dengan lauk sederhana, sayur rebus, dan buah segar adalah pilihan ideal. Makan di jam yang sama setiap harinya — tubuhmu akan berterima kasih.</p>',accent:'teal',wide:true},
+  {ico:'🕐',lbl:'Chinese Body Clock — Jam Aktif',txt:'<p><strong style="color:var(--gold)">07:00–09:00 (Lambung) dan 09:00–11:00 (Limpa)</strong> adalah dua jam berturut-turut yang paling penting untuk tubuhmu hari ini. Sarapan bergizi sebelum jam 09:00 dan aktivitas ringan setelahnya akan membuat sistem pencernaanmu bekerja dengan efisiensi tertinggi sepanjang hari.</p>',accent:'gold'},
+  {ico:'⚠️',lbl:'Pantangan Kesehatan',txt:'<p>Mengganti rutinitas secara mendadak, melewatkan makan, atau tidur di jam yang berbeda dari biasanya. Tubuhmu hari ini sangat menyukai predictability — gangguan terhadap ritme regulermu akan terasa lebih berat dari biasanya.</p>',accent:'red'},
+],
+finance:[
+  {ico:'📊',lbl:'Arus Rezeki',txt:'<p>Rezeki hari ini datang dari jalur yang sudah kamu kenal — gaji, pembayaran proyek yang sudah selesai, atau pengembalian atas kerja keras yang sudah lama kamu lakukan. Bukan windfall, tapi penghasilan yang deserved dan memuaskan.</p>',accent:'teal',bar:{pct:72,cls:'teal'}},
+  {ico:'🏦',lbl:'Tipe Investasi yang Sesuai',txt:'<p>Hari terbaik untuk instrumen investasi yang <strong style="color:var(--gold)">konservatif dan terstruktur</strong>: deposito, reksa dana pendapatan tetap, obligasi pemerintah, atau menabung secara konsisten. 正财 tidak menyukai spekulasi — ia menghargai keamanan dan pertumbuhan yang gradual tapi pasti.</p>',accent:'gold',tag:'good'},
+  {ico:'🔒',lbl:'Proteksi Finansial',txt:'<p>Buat atau review anggaran bulananmu. Identifikasi satu "kebocoran" finansial yang bisa kamu tutup. Kecil tapi konsisten — itulah filosofi 正财 dalam pengelolaan keuangan.</p>',accent:'dim'},
+  {ico:'🔢',lbl:'Angka & Arah Beruntung',txt:'${makeCompass("SE","Tenggara (SE) — Arah Sukses Kua 1","Untuk urusan finansial formal hari ini — menandatangani dokumen, membuka rekening, atau bertemu dengan financial advisor — usahakan posisi menghadap Tenggara. Angka beruntung: 5, 10 (elemen Tanah). Hindari pengeluaran besar di hari pasaran Pon jika kamu mengikuti sistem Jawa.")}',accent:'teal',wide:true,raw:true},
+  {ico:'💡',lbl:'Insight Finansial',txt:'<p>Kemakmuran yang dibangun dari 正财 mungkin tidak terlihat menarik dari luar — tidak ada cerita "dari nol jadi miliader dalam setahun". Tapi ia adalah jenis kemakmuran yang <strong style="color:var(--gold)">paling tahan banting dan paling sulit dihancurkan</strong>. Hargai proses ini.</p>',accent:'gold'},
+  {ico:'✅',lbl:'Satu Aksi Finansial Terbaik',txt:'<p>Set up autodebit untuk tabungan atau investasi rutin jika belum ada. Otomasi adalah cara terbaik untuk menghormati energi 正财 — "bayar dirimu sendiri dulu" sebelum pengeluaran lainnya.</p>',accent:'teal'},
+],
+romance:[
+  {ico:'🌱',lbl:'Vibrasi Relasi Hari Ini',txt:'<p>Kamu memancarkan energi yang sangat <strong style="color:var(--gold)">aman dan dapat diandalkan</strong> hari ini — seperti pohon yang sudah berakar kuat dan memberikan naungan bagi orang-orang di sekitarnya. Ini bukan tipe daya tarik yang meledak-ledak, tapi jauh lebih bernilai: orang merasa bisa mempercayaimu.</p>',accent:'teal'},
+  {ico:'💬',lbl:'Cara Komunikasi Terbaik',txt:'<p>Komunikasi yang <strong style="color:var(--gold)">konsisten dan reliable</strong> — membalas pesan tepat waktu, menepati janji kecil, hadir ketika dibutuhkan. Di hari 正财, tindakan berbicara jauh lebih keras dari kata-kata. Apa yang kamu lakukan (bukan ucapkan) hari ini akan diingat lebih lama.</p>',accent:'gold',wide:true},
+  {ico:'💝',lbl:'Kekuatan Relasi',txt:'<p>Ketulusan dan kebaikan hatimu bersinar sangat natural hari ini. Orang-orang yang sudah mengenalmu akan merasakan betapa beruntungnya mereka memilikimu dalam hidup mereka — bahkan tanpa kamu harus mengucapkan apapun.</p>',accent:'gold',tag:'good'},
+  {ico:'🐢',lbl:'Ritme yang Tepat',txt:'<p>Hari ini bukan untuk grand gesture atau momen yang dramatis — lebih cocok untuk <strong style="color:var(--gold)">koneksi yang tenang dan bermakna</strong>. Makan malam di rumah, berbagi cerita tentang hari, atau sekadar duduk bersama tanpa perlu berbuat banyak.</p>',accent:'dim'},
+  {ico:'📍',lbl:'Lokasi & Aktivitas Ideal',txt:'<p>Tempat yang <strong style="color:var(--gold)">familiar, nyaman, dan penuh memori positif</strong> — rumah, restoran langganan, atau taman yang sering kamu kunjungi bersama. Energi 正财 tidak butuh kebaruan; ia butuh kedalaman dan kenyamanan yang sudah terbangun.</p>',accent:'teal',wide:true},
+  {ico:'💡',lbl:'Insight untuk Relasi',txt:'<p>正财 mengajarkan bahwa <strong style="color:var(--gold)">cinta yang paling bertahan adalah yang dibangun dari kepercayaan yang dikumpulkan sedikit demi sedikit</strong>, bukan dari momen-momen besar yang jarang terjadi. Hari-hari "biasa" seperti ini adalah fondasi dari hubungan yang luar biasa.</p>',accent:'dim'},
+],},
+
+/* 6: 庚 七杀 7 Killings */
+{
+career:[
+  {ico:'⚔️',lbl:'Momentum Hari Ini',txt:'<p>Hari ini adalah ujian ketangguhan — dan ujian ini adalah kesempatanmu. Seperti logam yang ditempa, tekanan yang kamu hadapi hari ini sedang membentukmu menjadi versi yang lebih kuat. Setiap tantangan yang berhasil kamu navigasi hari ini meninggalkan jejak reputasi yang tidak bisa dibeli.</p>',accent:'gold'},
+  {ico:'🎯',lbl:'Tipe Pekerjaan Cocok',txt:'<p>Pekerjaan yang membutuhkan <strong style="color:var(--gold)">ketegasan, kepemimpinan di bawah tekanan, dan problem-solving krisis</strong>. Jika ada masalah besar yang sedang mengancam — hari ini kamu punya energi untuk menghadapinya secara langsung. Jangan hindari, hadapi.</p>',accent:'teal'},
+  {ico:'👔',lbl:'Dinamika dengan Atasan & Tim',txt:'<p>Tekanan dari atasan hari ini kemungkinan lebih tinggi dari biasanya — tapi ingat: 七杀 yang terkontrol adalah simbol otoritas dan kekuasaan. Tunjukkan bahwa kamu bisa diandalkan di situasi sulit. Dengan tim: jaga nada bicara agar tekanan yang kamu rasakan tidak tumpah ke rekan-rekan yang tidak bersalah.</p>',accent:'red',wide:true,tag:'warn'},
+  {ico:'🎯',lbl:'Fokus Aksi',txt:'<p>Pilih SATU prioritas terpenting dan fokus padanya secara total. Jangan tersebar. Energi 七杀 seperti laser — sangat powerful jika difokuskan ke satu titik, tapi tidak efektif jika disebarkan ke banyak arah sekaligus.</p>',accent:'gold'},
+  {ico:'💣',lbl:'Yang Harus Dihindari',txt:'<p>Konfrontasi tanpa persiapan matang, keputusan besar di bawah tekanan emosional, dan memaksakan diri secara fisik di luar batas kemampuan. Hari ini butuh kehati-hatian ekstra dalam setiap langkah.</p>',accent:'red',tag:'warn'},
+  {ico:'💡',lbl:'Insight untuk Harimu',txt:'<p>七杀 mengajarkan bahwa <strong style="color:var(--gold)">kekuatan sejati bukan tentang siapa yang paling keras, tapi tentang siapa yang tetap tegak ketika semua orang lain goyah</strong>. Hari ini sedang mengukur seberapa dalam akarmu tertancap. Semakin kuat badai, semakin dalam pohon harus berakar.</p>',accent:'teal',wide:true},
+],
+health:[
+  {ico:'🫀',lbl:'Organ yang Perlu Perhatian',txt:'<p>Paru-paru, tenggorokan, sistem pernapasan, dan kepala adalah area yang paling rentan di hari Metal-Wood clash. Tanda-tanda fisik dari tekanan hari ini: sesak dada, sakit kepala, atau tenggorokan yang terasa kencang — semua ini adalah sinyal tubuh bahwa stres perlu dikelola sekarang.</p>',accent:'gold',bar:{pct:42,cls:'red'}},
+  {ico:'😰',lbl:'Level & Pola Energi',txt:'<p>Energi terasa seperti tali yang ditarik dari dua arah — kamu butuh banyak tapi sekaligus banyak yang menguras. Manajemen energi adalah skill terpenting hari ini: ketahui kapan harus maju dan kapan harus mundur untuk mengisi ulang.</p>',accent:'red',bar:{pct:40,cls:'red'}},
+  {ico:'🌬️',lbl:'Aktivitas yang Dianjurkan',txt:'<p>Teknik pernapasan 4-7-8 (hirup 4 detik, tahan 7 detik, buang 8 detik) — lakukan 3-4 kali ketika merasa overwhelmed. Meditasi body scan selama 10 menit sebelum tidur untuk melepas ketegangan otot yang terakumulasi sepanjang hari.</p>',accent:'dim'},
+  {ico:'🍵',lbl:'Makanan & Minuman Hari Ini',txt:'<p>Fokus pada makanan yang <strong style="color:var(--gold)">anti-inflamasi dan menenangkan sistem saraf</strong>: teh hijau atau chamomile, dark chocolate (70%+), ikan berlemak, dan sayuran hijau gelap. Hindari kafein berlebihan, alkohol, dan makanan yang terlalu pedas — semua ini akan memperparah ketegangan yang sudah ada hari ini.</p>',accent:'teal',wide:true},
+  {ico:'🕐',lbl:'Chinese Body Clock — Jam Aktif',txt:'<p><strong style="color:var(--gold)">03:00–05:00</strong> adalah jam Paru-paru dalam Chinese Body Clock — organ yang paling "tertekan" di hari Metal-Wood clash. Jika kamu terbangun di jam ini, itu bisa jadi sinyal bahwa ada sesuatu yang belum terselesaikan secara emosional dan sedang "diproses" oleh tubuhmu.</p>',accent:'gold'},
+  {ico:'🔇',lbl:'Pantangan Kesehatan',txt:'<p>Lingkungan bising, stimulasi berlebihan, dan olahraga intens yang memicu adrenalin tinggi. Semua ini akan memperburuk sistem saraf yang sudah dalam "combat mode". Pilih ketenangan kapanpun ada kesempatan.</p>',accent:'red',tag:'warn'},
+],
+finance:[
+  {ico:'🛡️',lbl:'Arus Rezeki',txt:'<p>Ini bukan hari untuk ekspansi finansial — ini hari untuk <strong style="color:var(--gold)">melindungi apa yang sudah ada</strong>. Seperti seorang prajurit yang lebih bijak untuk bertahan di balik perisai daripada menyerang di tengah badai.</p>',accent:'red',bar:{pct:35,cls:'red'}},
+  {ico:'📊',lbl:'Tipe Investasi yang Sesuai',txt:'<p>Tidak ada yang ideal untuk dieksekusi hari ini. Jika ada posisi investasi yang sudah lama membuatmu khawatir — hari ini bisa menjadi waktu untuk melakukan stop-loss dan menerima kerugian kecil sebelum menjadi kerugian besar.</p>',accent:'dim'},
+  {ico:'⚡',lbl:'Risiko Utama',txt:'<p>Pengeluaran mendadak akibat situasi darurat yang muncul tidak terduga — hal-hal mekanis (kendaraan, elektronik), atau kebutuhan yang tidak terencana. Pastikan kamu punya dana darurat yang mudah diakses hari ini.</p>',accent:'red',tag:'warn'},
+  {ico:'🔢',lbl:'Angka & Arah Beruntung',txt:'${makeCompass("SE","Tenggara (SE) — Arah Sukses sebagai Perlindungan","Hari ini gunakan arah Tenggara bukan untuk ekspansi tapi untuk perlindungan. Kalau ada masalah finansial yang perlu diselesaikan, hadapi dengan posisi menghadap SE. Angka: 1, 6 (elemen Air — yang mengontrol dan menaklukkan Metal). Warna biru atau hitam bisa membantu menetralisir tekanan Metal hari ini.")}',accent:'teal',wide:true,raw:true},
+  {ico:'💡',lbl:'Insight Finansial',txt:'<p>Kemampuan untuk <strong style="color:var(--gold)">bertahan dalam tekanan tanpa membuat keputusan buruk</strong> adalah skill finansial yang sangat langka dan berharga. Banyak orang kehilangan uang bukan karena investasi yang salah, tapi karena panik dan bereaksi di momen yang salah. Hari ini adalah latihan untuk skill itu.</p>',accent:'gold'},
+  {ico:'✅',lbl:'Satu Aksi Finansial Terbaik',txt:'<p>Review dan pastikan dana daruratmu mencukupi minimal 3 bulan pengeluaran. Jika belum, buat rencana konkret untuk mencapai angka itu — mulai dengan berapa yang bisa kamu sisihkan minggu ini.</p>',accent:'dim'},
+],
+romance:[
+  {ico:'🌋',lbl:'Vibrasi Relasi Hari Ini',txt:'<p>Ada tegangan yang lebih tinggi dari biasanya dalam interaksimu hari ini — bukan karena ada yang salah, tapi karena energi 七杀 secara alami menciptakan dinamika yang lebih intens dan tajam. Ini bisa menjadi keintiman yang mendalam atau konflik yang tidak perlu, tergantung bagaimana kamu mengelolanya.</p>',accent:'red'},
+  {ico:'💬',lbl:'Cara Komunikasi Terbaik',txt:'<p>Komunikasi yang <strong style="color:var(--gold)">pendek, jelas, dan tidak ambigu</strong>. Hari ini bukan waktu untuk percakapan panjang yang emosional atau diskusi tentang isu-isu yang sensitif. Semakin singkat dan jelas komunikasimu, semakin kecil peluang terjadinya miskomunikasi yang bisa memicu konflik.</p>',accent:'teal',wide:true},
+  {ico:'🗝️',lbl:'Kekuatan Relasi',txt:'<p>Ketangguhan dan ketenangan yang kamu tunjukkan di bawah tekanan hari ini adalah daya tarik yang sangat powerful — jauh lebih menarik dari semua kata-kata romantis yang pernah kamu ucapkan. Pasanganmu melihatmu berjuang dan tetap tegak — itu meninggalkan kesan mendalam.</p>',accent:'gold',tag:'good'},
+  {ico:'🌋',lbl:'Potensi Gesekan',txt:'<p>Stres hari ini bisa terbawa tanpa sadar ke interaksi dengan orang yang kamu sayangi. Sebelum pulang atau bertemu pasangan, lakukan "decompression ritual" kecil: 5 menit sendiri, tarik napas dalam, dan sadari bahwa mereka bukan penyebab tekananmu hari ini.</p>',accent:'red',tag:'warn'},
+  {ico:'📍',lbl:'Lokasi & Aktivitas Ideal',txt:'<p>Tempat yang <strong style="color:var(--gold)">sunyi, natural, dan memberikan ruang untuk bernapas</strong> — taman sepi, pantai saat sepi, atau sekadar duduk di teras di malam hari. Alam memiliki kemampuan untuk menetralisir energi 七杀 yang keras. Berikan dirimu dan pasanganmu ruang untuk hadir tanpa tekanan.</p>',accent:'dim',wide:true},
+  {ico:'💡',lbl:'Insight untuk Relasi',txt:'<p>七杀 dalam konteks asmara mengajarkan bahwa <strong style="color:var(--gold)">relasi yang kuat dibangun bukan di momen yang indah, tapi di saat-saat sulit</strong>. Bagaimana kamu dan pasanganmu melewati hari yang berat seperti ini bersama-sama — itulah ukuran sesungguhnya dari kekuatan hubungan kalian.</p>',accent:'teal'},
+],},
+
+/* 7: 辛 正官 Direct Officer */
+{
+career:[
+  {ico:'🏛️',lbl:'Momentum Hari Ini',txt:'<p>Hari ini sistem, institusi, dan otoritas formal bekerja <strong style="color:var(--gold)">untuk</strong>mu — bukan melawanmu. Ini adalah hari di mana mengikuti prosedur yang benar membuka pintu, dan integritas yang selama ini kamu jaga mendapat pengakuan yang nyata.</p>',accent:'gold',tag:'good'},
+  {ico:'📜',lbl:'Tipe Pekerjaan Cocok',txt:'<p>Semua urusan yang membutuhkan <strong style="color:var(--gold)">formalitas, kredibilitas, dan representasi profesional</strong>: wawancara kerja, evaluasi kinerja tahunan, presentasi ke direksi atau investor, penandatanganan kontrak, atau pertemuan dengan klien institusional. Hari ini kamu tampil dengan otoritas natural yang sulit diabaikan.</p>',accent:'teal'},
+  {ico:'👔',lbl:'Dinamika dengan Atasan & Tim',txt:'<p>Dengan atasan: energi 正官 secara langsung meningkatkan kredibilitasmu di mata mereka — cara kamu bekerja dan berkomunikasi hari ini meninggalkan kesan profesional yang kuat. Dengan tim: kamu adalah figur yang paling "reliable" hari ini — manfaatkan ini untuk mengambil kepemimpinan di situasi yang membutuhkan kepastian.</p>',accent:'teal',wide:true},
+  {ico:'📑',lbl:'Fokus Aksi',txt:'<p>Selesaikan semua urusan formal yang tertunda: dokumen, kontrak, proposal resmi, atau komunikasi dengan instansi/klien yang sudah lama menunggu. Energi hari ini sangat mendukung penyelesaian hal-hal "serius" yang butuh presisi.</p>',accent:'gold'},
+  {ico:'🐌',lbl:'Yang Harus Dihindari',txt:'<p>Perfeksionisme yang melumpuhkan — mencari kesempurnaan hingga tidak ada yang selesai. 正官 menghargai standar tinggi tapi juga menghargai progress. "Done is better than perfect" berlaku hari ini.</p>',accent:'red'},
+  {ico:'💡',lbl:'Insight untuk Harimu',txt:'<p>辛 正官 hari ini adalah cerminan langsung dari Luck Pillar yang sedang kamu jalani. Tema utama fase hidupmu sekarang — <strong style="color:var(--gold)">membangun karir yang diakui dan dihormati</strong> — mendapat konfirmasi penuh hari ini. Setiap langkah yang kamu ambil dengan integritas hari ini adalah investasi langsung ke versi dirimu yang 5 tahun ke depan.</p>',accent:'teal',wide:true},
+],
+health:[
+  {ico:'🫁',lbl:'Organ yang Perlu Perhatian',txt:'<p>Paru-paru dan sistem pernapasan dalam kondisi baik hari ini — elemen Metal mendukung dan memperkuat organ ini. Ini adalah hari yang ideal untuk memberikan perhatian khusus pada kualitas pernapasanmu, terutama jika kamu biasanya bernapas pendek-pendek karena stres.</p>',accent:'gold',bar:{pct:65,cls:'gold'}},
+  {ico:'🔋',lbl:'Level & Pola Energi',txt:'<p>Energi stabil dan "clean" seperti udara dingin di pagi hari — segar, jernih, dan memberikan kejelasan pikiran. Tidak terlalu meledak-ledak, tapi sangat sustain dan dapat diandalkan sepanjang hari.</p>',accent:'teal',bar:{pct:63,cls:'teal'}},
+  {ico:'🚴',lbl:'Aktivitas yang Dianjurkan',txt:'<p>Olahraga aerobik yang mendukung kapasitas paru-paru: bersepeda, jalan cepat, atau renang. 20-30 menit di intensitas moderat lebih baik dari 10 menit yang sangat intens untuk hari ini. Pernapasan yang dalam dan teratur adalah kuncinya.</p>',accent:'dim'},
+  {ico:'🍃',lbl:'Makanan & Minuman Hari Ini',txt:'<p>Makanan yang <strong style="color:var(--gold)">mendukung sistem pernapasan dan paru-paru</strong>: pir, lobak putih, bawang putih, dan makanan putih/bening secara umum (dalam TCM, warna putih berasosiasi dengan elemen Metal dan paru-paru). Minum air putih yang cukup — minimal 2 liter — untuk menjaga mukosa saluran pernapasan tetap lembab.</p>',accent:'teal',wide:true},
+  {ico:'🕐',lbl:'Chinese Body Clock — Jam Aktif',txt:'<p><strong style="color:var(--gold)">03:00–05:00 (Paru-paru) dan 05:00–07:00 (Usus Besar)</strong> adalah jam organ Metal dalam Chinese Body Clock. Jika kamu biasanya bangun pagi, ini adalah waktu terbaik untuk melakukan pernapasan dalam atau meditasi singkat — tubuhmu sedang dalam mode "purifikasi" alami di jam-jam ini.</p>',accent:'gold'},
+  {ico:'😤',lbl:'Pantangan Kesehatan',txt:'<p>Udara berpolusi, rokok (aktif maupun pasif), dan lingkungan yang pengap. Usahakan berada di ruangan dengan sirkulasi udara yang baik sepanjang hari — ini lebih penting dari biasanya hari ini.</p>',accent:'dim'},
+],
+finance:[
+  {ico:'📋',lbl:'Arus Rezeki',txt:'<p>Rezeki hari ini datang melalui <strong style="color:var(--gold)">jalur resmi dan terstruktur</strong> — transfer gaji, pembayaran kontrak, atau pengakuan formal atas jasa yang sudah kamu berikan. Bukan windfall, tapi earned income yang sangat memuaskan.</p>',accent:'teal',bar:{pct:62,cls:'teal'}},
+  {ico:'🖊️',lbl:'Tipe Investasi yang Sesuai',txt:'<p>Instrumen yang <strong style="color:var(--gold)">formal, regulated, dan terlindungi secara hukum</strong>: reksa dana dari manajer investasi terdaftar, SBR/ORI (Surat Berharga Ritel), asuransi jiwa dengan investasi, atau membuka rekening di bank yang sudah lama kamu pertimbangkan. Segala urusan finansial yang butuh tanda tangan dan dokumen berjalan sangat lancar hari ini.</p>',accent:'gold',tag:'good'},
+  {ico:'📌',lbl:'Hal yang Perlu Diperhatikan',txt:'<p>Pastikan semua dokumen finansial yang kamu tandatangani hari ini sudah dibaca dengan teliti. Energi hari ini mendukung kesepakatan yang fair dan menguntungkan — tapi kejujuranmu sendiri adalah kondisi yang harus selalu kamu penuhi.</p>',accent:'dim'},
+  {ico:'🔢',lbl:'Angka & Arah Beruntung',txt:'${makeCompass("E","Timur (E) — Arah Kesehatan & Pertumbuhan Kua 1","Untuk urusan finansial formal hari ini: arahkan meja kerja atau posisi dudukmu menghadap Timur. Angka beruntung: 4, 9 (angka elemen Metal dalam numerologi Bazi). Warna putih atau abu-abu metalik pada pakaian memperkuat energi 辛 hari ini.")}',accent:'teal',wide:true,raw:true},
+  {ico:'💡',lbl:'Insight Finansial',txt:'<p>Reputasi finansialmu — credit score, rekam jejak pembayaran, dan integritas dalam setiap transaksi — adalah <strong style="color:var(--gold)">aset yang jauh lebih berharga dari jumlah uang yang kamu miliki sekarang</strong>. 正官 hari ini mengingatkan bahwa cara kamu mengelola uang mencerminkan siapa kamu sebagai manusia.</p>',accent:'gold'},
+  {ico:'✅',lbl:'Satu Aksi Finansial Terbaik',txt:'<p>Periksa dan perbarui semua dokumen finansial pentingmu: polis asuransi, akun investasi, dan rencana keuangan. Pastikan semua masih relevan dan sesuai dengan kondisi hidupmu saat ini.</p>',accent:'teal'},
+],
+romance:[
+  {ico:'🏛️',lbl:'Vibrasi Relasi Hari Ini',txt:'<p>Ada kualitas yang sangat <strong style="color:var(--gold)">dapat diandalkan dan terpercaya</strong> darimu hari ini — orang-orang di sekitarmu merasa bahwa kamu adalah seseorang yang benar-benar ada, bukan hanya hadir secara fisik. Kualitas ini jarang dan sangat dihargai.</p>',accent:'teal'},
+  {ico:'💬',lbl:'Cara Komunikasi Terbaik',txt:'<p>Komunikasi yang <strong style="color:var(--gold)">jelas, jujur, dan langsung pada intinya</strong> — tanpa drama atau manipulasi emosional. 正官 tidak menyukai ketidakjelasan. Jika ada sesuatu yang ingin kamu sampaikan, katakan dengan sopan tapi tegas hari ini. Kejelasanmu justru akan membuat orang lain merasa dihormati.</p>',accent:'gold',wide:true},
+  {ico:'💍',lbl:'Kekuatan Relasi',txt:'<p>Komitmen dan konsistensimu sangat terasa hari ini. Ini adalah momen yang tepat untuk membuktikan bahwa kamu "menepati kata" — jika kamu berjanji sesuatu, lakukan. Jika kamu sudah ada komitmen, perkuat.</p>',accent:'gold',tag:'good'},
+  {ico:'📐',lbl:'Potensi Gesekan',txt:'<p>Terlalu formal atau transaksional dalam situasi yang harusnya santai dan playful. Tidak semua interaksi perlu "agenda" dan "deliverables" — belajarlah untuk hadir tanpa tujuan di luar menikmati momen bersama.</p>',accent:'red'},
+  {ico:'📍',lbl:'Lokasi & Aktivitas Ideal',txt:'<p>Tempat yang <strong style="color:var(--gold)">elegan, bersih, dan memiliki standar yang tinggi</strong> — restoran yang baik, museum, pertunjukan seni, atau pengalaman yang "quality over quantity". 正官 menghargai hal-hal yang dilakukan dengan benar dan bermartabat, bukan yang hanya sekedar menyenangkan sesaat.</p>',accent:'teal',wide:true},
+  {ico:'💡',lbl:'Insight untuk Relasi',txt:'<p>正官 mengajarkan bahwa cinta yang paling abadi adalah cinta yang dibangun di atas <strong style="color:var(--gold)">rasa hormat yang mutual</strong> — bukan hanya perasaan, tapi juga pengakuan atas nilai dan integritas masing-masing. Hari ini adalah pengingat untuk menghormati dirimu sendiri sebelum mengharapkan dihormati orang lain.</p>',accent:'dim'},
+],},
+
+/* 8: 壬 偏印 Indirect Resource */
+{
+career:[
+  {ico:'🔭',lbl:'Momentum Hari Ini',txt:'<p>Hari ini otakmu bekerja seperti teleskop — mampu melihat hal-hal yang jauh dan tidak terlihat oleh orang lain. Energi 偏印 adalah energi para <strong style="color:var(--gold)">visioner dan pemikir strategis</strong>. Gunakan ini untuk merencanakan masa depan, bukan untuk mengeksekusi masa sekarang.</p>',accent:'dim'},
+  {ico:'🧪',lbl:'Tipe Pekerjaan Cocok',txt:'<p>Riset mendalam, analisis kompetitor, perencanaan strategi jangka panjang, mapping risiko, atau belajar skill yang sudah lama kamu inginkan. Semua pekerjaan yang membutuhkan <strong style="color:var(--gold)">pemikiran mendalam tanpa gangguan</strong> berjalan sangat baik hari ini.</p>',accent:'teal'},
+  {ico:'👥',lbl:'Dinamika dengan Atasan & Tim',txt:'<p>Hari ini kamu lebih efektif sebagai "pemikir di balik layar" daripada sebagai "aktor di depan". Hindari meeting panjang yang menguras konsentrasi. Kalau bisa, minta waktu untuk bekerja secara mandiri — kontribusimu dalam bentuk pemikiran dan riset hari ini jauh lebih berharga dari kehadiran fisik dalam rapat.</p>',accent:'dim',wide:true},
+  {ico:'📚',lbl:'Fokus Aksi',txt:'<p>Pilih satu topik yang ingin kamu kuasai — dedikasikan 2-3 jam untuk riset yang terfokus dan mendalam tentang topik itu. Pemahaman yang kamu bangun hari ini akan menjadi "senjata" yang sangat berguna di hari-hari mendatang.</p>',accent:'gold'},
+  {ico:'📢',lbl:'Yang Harus Dihindari',txt:'<p>Presentasi atau pitching penting, keputusan yang butuh kepastian, dan komitmen jangka panjang yang tidak bisa diubah. Energi hari ini membuat semua hal terasa lebih kompleks dari yang sebenarnya — tunggu hari yang lebih kondusif.</p>',accent:'red',tag:'warn'},
+  {ico:'💡',lbl:'Insight untuk Harimu',txt:'<p>偏印 mengajarkan bahwa <strong style="color:var(--gold)">pemahaman yang dalam lebih berharga dari tindakan yang cepat</strong>. Dunia mengagumi orang yang bergerak cepat — tapi dunia diubah oleh orang yang berpikir dalam. Hari ini adalah harimu untuk menjadi yang terakhir itu.</p>',accent:'teal',wide:true},
+],
+health:[
+  {ico:'🧠',lbl:'Organ yang Perlu Perhatian',txt:'<p>Ginjal dan sistem saraf adalah organ utama elemen Air dalam TCM. Ketika Air terlalu kuat seperti hari ini, ginjal bekerja overtime dan sistem saraf menjadi "hypersensitive" — kamu mungkin merasa lebih mudah terkejut, lebih reaktif terhadap suara, atau lebih intuitif dari biasanya.</p>',accent:'gold',bar:{pct:40,cls:'gold'}},
+  {ico:'😵',lbl:'Level & Pola Energi',txt:'<p>Energi mental sangat aktif tapi energi fisik terasa lemah. Ini adalah "mismatch" yang khas di hari 偏印 — pikiranmu terus berlari tapi tubuhmu ingin istirahat. Dengarkan tubuh, bukan pikiran hari ini.</p>',accent:'red',bar:{pct:36,cls:'red'}},
+  {ico:'🧘',lbl:'Aktivitas yang Dianjurkan',txt:'<p>Meditasi mindfulness (fokus pada napas, bukan pada pikiran), yin yoga dengan posisi berbaring, atau sekadar duduk di alam terbuka tanpa gadget selama 20 menit. Tujuannya adalah <strong style="color:var(--gold)">menenangkan "noise" mental</strong> tanpa memaksakan tubuh bergerak.</p>',accent:'dim'},
+  {ico:'🫚',lbl:'Makanan & Minuman Hari Ini',txt:'<p>Makanan yang <strong style="color:var(--gold)">menghangatkan dan menguatkan ginjal</strong> sangat dibutuhkan hari ini untuk menyeimbangkan kelebihan Air: kacang hitam, wijen hitam, kentang, kacang walnut, dan makanan berwarna hitam/gelap secara umum. Minum air hangat daripada dingin. Hindari makanan terlalu asin (memberatkan ginjal) dan minuman dingin.</p>',accent:'teal',wide:true},
+  {ico:'🕐',lbl:'Chinese Body Clock — Jam Aktif',txt:'<p><strong style="color:var(--gold)">17:00–19:00 (Ginjal) dan 15:00–17:00 (Kandung Kemih)</strong> adalah jam organ Air yang paling aktif. Di jam-jam ini, hindari kerja berat dan dedikasikan waktu untuk peregangan ringan, hidrasi yang cukup, atau sekadar berjalan-jalan santai.</p>',accent:'gold'},
+  {ico:'💭',lbl:'Pantangan Kesehatan',txt:'<p>Overthinking hingga larut malam, scrolling tak henti sebelum tidur, dan stimulasi mental yang berlebihan setelah jam 20:00. Sistem sarafmu butuh "digital detox" hari ini — matikan notifikasi lebih awal dari biasanya.</p>',accent:'red',tag:'warn'},
+],
+finance:[
+  {ico:'🔍',lbl:'Arus Rezeki',txt:'<p>Hari ini bukan tentang mendatangkan rezeki baru, tapi tentang <strong style="color:var(--gold)">memahami rezeki yang sudah ada</strong> secara lebih mendalam. Ini adalah hari untuk analisis, bukan aksi — dan pemahaman yang kamu bangun hari ini bisa mengubah cara kamu mengelola keuangan secara fundamental.</p>',accent:'dim',bar:{pct:40,cls:'teal'}},
+  {ico:'📖',lbl:'Tipe Investasi yang Sesuai',txt:'<p>Tidak ada eksekusi investasi yang ideal hari ini. Gunakan waktu ini untuk hal yang jauh lebih berharga: <strong style="color:var(--gold)">membaca buku investasi yang sudah lama kamu tunda</strong>, menonton video edukasi tentang strategi finansial, atau mengikuti webinar dari praktisi yang kamu percaya.</p>',accent:'teal'},
+  {ico:'🎲',lbl:'Yang Perlu Diwaspadai',txt:'<p>Keputusan finansial yang terasa "brilian" di hari 偏印 seringkali terlihat sangat berbeda keesokan harinya ketika energinya tidak sekuat ini. Tulis ide-idenya, tapi tunda eksekusi minimal 48 jam untuk validasi.</p>',accent:'red',tag:'warn'},
+  {ico:'🔢',lbl:'Angka & Arah Beruntung',txt:'${makeCompass("N","Utara (N) — Arah Pengembangan Kua 1","Arah Utara adalah arah Development dan pemikiran strategis untuk Kua 1. Hari ini sangat cocok untuk aktivitas belajar atau merencanakan di ruangan yang menghadap Utara. Angka beruntung: 1, 6 (angka elemen Air). Warna biru tua atau hitam mendukung energi reflektif 偏印 hari ini.")}',accent:'teal',wide:true,raw:true},
+  {ico:'💡',lbl:'Insight Finansial',txt:'<p>Orang yang paling sukses secara finansial bukan yang paling sering bertransaksi, tapi yang paling sering belajar dan merefleksikan strategi mereka. <strong style="color:var(--gold)">Hari 偏印 adalah investasi dalam "financial intelligence"-mu</strong> — sesuatu yang tidak bisa dibeli tapi menghasilkan returns seumur hidup.</p>',accent:'gold'},
+  {ico:'✅',lbl:'Satu Aksi Finansial Terbaik',txt:'<p>Baca satu artikel atau video tentang strategi finansial yang belum kamu ketahui sebelumnya. Catat satu insight yang paling relevan dengan situasimu dan rencanakan kapan akan kamu implementasikan.</p>',accent:'teal'},
+],
+romance:[
+  {ico:'🌊',lbl:'Vibrasi Relasi Hari Ini',txt:'<p>Ada kualitas yang sangat <strong style="color:var(--gold)">dalam dan misterius</strong> darimu hari ini — kamu mungkin tidak banyak bicara, tapi setiap kata yang kamu ucapkan terasa bermakna. Orang-orang yang mengenalmu dengan baik akan merasa ada yang "berbeda" hari ini tanpa bisa mendefinisikannya.</p>',accent:'teal'},
+  {ico:'💬',lbl:'Cara Komunikasi Terbaik',txt:'<p>Percakapan <strong style="color:var(--gold)">satu lawan satu yang tenang dan mendalam</strong> adalah mode komunikasi terbaikmu hari ini. Bukan grup chat yang bising, bukan dinner dengan banyak orang — tapi duduk berhadapan dengan satu orang yang kamu percaya dan berbagi hal-hal yang biasanya kamu simpan sendiri.</p>',accent:'gold',wide:true},
+  {ico:'🔮',lbl:'Kekuatan Relasi',txt:'<p>Intuisimu tentang perasaan orang lain sangat tajam hari ini — kamu bisa "membaca" kondisi emosional pasanganmu tanpa perlu kata-kata. Gunakan kepekaan ini untuk hadir sepenuhnya, bukan untuk menganalisis berlebihan.</p>',accent:'gold'},
+  {ico:'🚪',lbl:'Kebutuhan Hari Ini',txt:'<p>Kamu membutuhkan lebih banyak ruang pribadi dari biasanya — ini adalah kebutuhan yang valid dan sehat, bukan penolakan. Komunikasikan ini kepada pasangan atau orang-orang terdekatmu agar mereka tidak salah mengartikan kebutuhanmu akan kesendirian sebagai jarak.</p>',accent:'dim'},
+  {ico:'📍',lbl:'Lokasi & Aktivitas Ideal',txt:'<p>Tempat yang <strong style="color:var(--gold)">tenang, inspiratif, dan memungkinkan refleksi</strong>: perpustakaan, kedai buku kecil, atau rumah yang nyaman dengan lilin dan musik instrumental. Aktivitas yang melibatkan kreasi bersama — memasak, menggambar, atau menulis — menciptakan koneksi yang sangat organik di hari 偏印.</p>',accent:'teal',wide:true},
+  {ico:'📔',lbl:'Insight untuk Relasi',txt:'<p>偏印 mengajarkan bahwa <strong style="color:var(--gold)">keintiman yang paling dalam adalah keintiman intelektual dan spiritual</strong> — ketika dua pikiran bisa bertemu di ruang yang sama dan menemukan bahwa mereka lebih mirip dari yang mereka duga. Hari ini adalah undangan untuk mencari jenis keintiman itu.</p>',accent:'gold'},
+],},
+
+/* 9: 癸 正印 Direct Resource */
+{
+career:[
+  {ico:'👨‍🏫',lbl:'Momentum Hari Ini',txt:'<p>Hari ini semesta sedang mengirimkan dukungan melalui orang-orang yang lebih berpengalaman dari kamu. <strong style="color:var(--gold)">Buka dirimu untuk menerima bimbingan</strong> — entah dari mentor formal, senior, atasan, atau bahkan orang asing yang secara kebetulan memberikan perspektif yang kamu butuhkan.</p>',accent:'teal',tag:'good'},
+  {ico:'📚',lbl:'Tipe Pekerjaan Cocok',txt:'<p>Pembelajaran formal, penelitian mendalam, pekerjaan yang membutuhkan <strong style="color:var(--gold)">wisdom dan konteks historis</strong>, mentoring orang lain, atau mengerjakan proposal yang butuh referensi dan data yang solid. Kamu menyerap dan memproses informasi lebih efisien dari biasanya hari ini.</p>',accent:'gold'},
+  {ico:'👥',lbl:'Dinamika dengan Atasan & Tim',txt:'<p>Dengan atasan: hari yang sempurna untuk minta feedback, bimbingan, atau membahas rencana karir jangka panjang. Energi 正印 membuat atasan lebih cenderung untuk memberikan dukungan dan arahan yang genuine. Dengan tim: posisikanmu sebagai "learner" hari ini — bertanya lebih banyak daripada berbicara. Kamu akan terkejut dengan insight yang kamu dapatkan.</p>',accent:'teal',wide:true},
+  {ico:'📞',lbl:'Fokus Aksi',txt:'<p>Hubungi satu orang yang selama ini ingin kamu minta nasihat atau mentorship-nya. Satu percakapan yang tepat hari ini bisa mengubah arah perjalanan karirmu secara signifikan.</p>',accent:'gold'},
+  {ico:'🦅',lbl:'Yang Harus Dihindari',txt:'<p>Memaksakan kemandirian penuh dan menolak bantuan yang datang. 正印 hadir untuk memberimu dukungan — menolaknya adalah melawan arus hari ini. Penerimaan adalah kekuatan, bukan kelemahan.</p>',accent:'dim'},
+  {ico:'💡',lbl:'Insight untuk Harimu',txt:'<p>正印 mengajarkan bahwa <strong style="color:var(--gold)">tidak ada yang benar-benar self-made</strong> — semua orang berdiri di atas bahu orang-orang yang telah memandu dan mendukung mereka. Hari ini adalah pengingat untuk bersyukur atas semua yang telah diajarkan padamu, dan untuk terus membuka diri terhadap pelajaran-pelajaran baru yang belum kamu bayangkan.</p>',accent:'teal',wide:true},
+],
+health:[
+  {ico:'💧',lbl:'Organ yang Perlu Perhatian',txt:'<p>Ginjal dan sistem limfatik adalah fokus utama hari ini. Elemen Air 癸 yang lembut seperti embun pagi mendukung proses detoksifikasi alami tubuh. Ini adalah hari yang baik untuk memberikan tubuhmu kondisi terbaik untuk membersihkan dirinya sendiri.</p>',accent:'gold',bar:{pct:52,cls:'gold'}},
+  {ico:'🔋',lbl:'Level & Pola Energi',txt:'<p>Energi sedang dan cenderung ke dalam — bukan hari untuk "perform" di hadapan orang banyak, tapi sangat baik untuk pekerjaan yang butuh konsentrasi dan ketenangan. Tubuhmu sedang dalam mode regenerasi yang aktif.</p>',accent:'teal',bar:{pct:50,cls:'teal'}},
+  {ico:'🛁',lbl:'Aktivitas yang Dianjurkan',txt:'<p>Mandi air hangat dengan garam Epsom, perendaman kaki dengan air hangat, atau terapi panas ringan lainnya — semua ini secara signifikan membantu sistem limfatik dan ginjal di hari 癸. Berjalan santai di sekitar lingkungan tanpa tujuan khusus juga sangat therapeutic.</p>',accent:'dim'},
+  {ico:'🍲',lbl:'Makanan & Minuman Hari Ini',txt:'<p>Fokus pada makanan yang <strong style="color:var(--gold)">hidrasi, ringan, dan mudah dicerna</strong>: buah-buahan dengan kandungan air tinggi (semangka, mentimun, jeruk), sup kaldu yang hangat, dan makanan fermentasi yang baik untuk usus. Minum setidaknya 2.5 liter air hari ini — sistem limfatikmu butuh air lebih dari biasanya. Hindari makanan yang digoreng dalam, sangat berlemak, atau terlalu pedas.</p>',accent:'teal',wide:true},
+  {ico:'🕐',lbl:'Chinese Body Clock — Jam Aktif',txt:'<p><strong style="color:var(--gold)">17:00–19:00 (Ginjal)</strong> adalah jam yang paling relevan hari ini. Pada jam ini, lakukan sesuatu yang sangat menenangkan dan nurturing — mandi hangat, memijat titik di telapak kaki (titik Yongquan/K1 untuk mengaktifkan meridian Ginjal), atau sekadar duduk diam dan berterima kasih atas hal-hal baik dalam hidupmu.</p>',accent:'gold'},
+  {ico:'🌧️',lbl:'Pantangan Kesehatan',txt:'<p>Paparan dingin dan hujan yang terlalu lama (sistem imun sedang berkonsolidasi), makanan terlalu berat di malam hari, dan tidur terlalu larut. Istirahat lebih awal adalah bentuk self-care terbaik yang bisa kamu berikan pada dirimu hari ini.</p>',accent:'red'},
+],
+finance:[
+  {ico:'📖',lbl:'Arus Rezeki',txt:'<p>Rezeki hari ini bersifat "indirect" — bukan uang yang langsung masuk, tapi <strong style="color:var(--gold)">investasi dalam pengetahuan dan koneksi</strong> yang akan menghasilkan rezeki yang jauh lebih besar di masa depan. Belajar sesuatu yang bernilai hari ini adalah tindakan finansial yang paling bijak.</p>',accent:'dim',bar:{pct:52,cls:'teal'}},
+  {ico:'🎓',lbl:'Tipe Investasi yang Sesuai',txt:'<p>Investasi dalam <strong style="color:var(--gold)">pendidikan dan pengembangan diri</strong> adalah prioritas hari ini: mendaftar kursus online, membeli buku yang akan meningkatkan skill bernilai, atau berkonsultasi dengan financial advisor profesional. Pengeluaran untuk pembelajaran hari ini adalah investasi dengan ROI tertinggi dalam jangka panjang.</p>',accent:'teal',tag:'good'},
+  {ico:'📌',lbl:'Aksi Finansial yang Tepat',txt:'<p>Review rekening dan portofolio investasimu — bukan untuk diutak-atik, tapi untuk <strong style="color:var(--gold)">memahami kondisinya secara menyeluruh</strong>. Catat hal-hal yang perlu diperbaiki untuk dieksekusi di hari yang lebih kondusif (seperti hari 戊 atau 丙).</p>',accent:'dim'},
+  {ico:'🔢',lbl:'Angka & Arah Beruntung',txt:'${makeCompass("E","Timur (E) — Arah Kesehatan & Pertumbuhan Kua 1","Hari ini gunakan arah Timur untuk aktivitas belajar dan refleksi. Buat meja belajarmu menghadap Timur untuk memaksimalkan penyerapan informasi. Angka beruntung: 1, 6 (elemen Air). Warna biru muda atau hijau muda mendukung energi nurturing 癸 hari ini.")}',accent:'teal',wide:true,raw:true},
+  {ico:'🌱',lbl:'Insight Finansial',txt:'<p>Ada sebuah konsep dalam investasi: <strong style="color:var(--gold)">"The best time to plant a tree was 20 years ago. The second best time is now."</strong> 正印 hari ini mengundangmu untuk menanam pohon yang akan memberikan naungan bagi versi dirimu di masa depan — dalam bentuk skill, knowledge, atau relasi yang tepat.</p>',accent:'gold',wide:true},
+  {ico:'✅',lbl:'Satu Aksi Finansial Terbaik',txt:'<p>Buat janji dengan seorang financial advisor atau mentor finansial — entah profesional atau seseorang yang sudah terbukti mengelola keuangan dengan baik. Satu percakapan yang tepat bisa mengubah trajectory finansialmu secara dramatis.</p>',accent:'teal'},
+],
+romance:[
+  {ico:'🌧️',lbl:'Vibrasi Relasi Hari Ini',txt:'<p>Ada kelembutan dan kehangatan yang sangat genuine darimu hari ini — seperti hujan lembut yang menyirami tanaman tanpa membanjirinya. Orang-orang di sekitarmu merasakan betapa <strong style="color:var(--gold)">sungguh-sungguhnya perhatianmu</strong> terhadap mereka.</p>',accent:'teal'},
+  {ico:'💬',lbl:'Cara Komunikasi Terbaik',txt:'<p>Mendengarkan dengan penuh perhatian adalah bentuk komunikasi terkuat hari ini — lebih kuat dari kata-kata terbaik yang bisa kamu susun. Hari ini, berikan hadiah termahalmu kepada orang yang kamu sayangi: <strong style="color:var(--gold)">perhatianmu yang tidak terbagi.</strong> Letakkan HP, tatap matanya, dan benar-benar dengarkan.</p>',accent:'gold',wide:true},
+  {ico:'🤗',lbl:'Kekuatan Relasi',txt:'<p>Ketulusan dan kehangatan hatimu hari ini seperti magnet yang menarik orang untuk merasa aman dan diterima di sekitarmu. Ini adalah saat di mana orang-orang yang hidupnya sedang sulit akan secara natural mencari kehadiranmu.</p>',accent:'gold',tag:'good'},
+  {ico:'🌿',lbl:'Kebutuhan Relasi Hari Ini',txt:'<p>Kamu juga butuh menerima hari ini — bukan hanya memberi. Jika ada seseorang yang ingin melakukan sesuatu untukmu, biarkan mereka. Belajar menerima dengan grace adalah salah satu pelajaran terpenting yang bisa kamu kuasai dalam relasi.</p>',accent:'dim'},
+  {ico:'📍',lbl:'Lokasi & Aktivitas Ideal',txt:'<p>Tempat yang <strong style="color:var(--gold)">tenang, hangat, dan intimate</strong>: rumah dengan cahaya lilin, taman kecil yang sepi di sore hari, atau makan malam masakan sendiri yang sederhana tapi penuh perhatian. 正印 tidak butuh kemewahan — ia butuh ketulusan dan kehangatan yang tidak bisa dibeli.</p>',accent:'teal',wide:true},
+  {ico:'🕯️',lbl:'Insight untuk Relasi',txt:'<p>正印 mengajarkan bahwa <strong style="color:var(--gold)">cinta yang paling menyembuhkan adalah cinta yang tidak menuntut</strong> — yang hadir bukan karena apa yang bisa didapat, tapi karena memang ingin ada. Hari ini adalah undangan untuk mencintai dengan cara itu: tanpa agenda, tanpa kondisi, hanya kehadiran yang tulus.</p>',accent:'dim'},
+],},
+
+]; /* end GD */
+
+
+const SP={'甲午':'✦ Hari Pilar Kelahiranmu (甲午)! Resonansi personal paling dalam — energimu paling autentik dalam siklus 60 hari.','乙亥':'✦ Resonansi dengan Pilar Jam lahirmu (乙亥). Visi dalam dan intuisimu sangat aktif.','甲戌':'✦ Resonansi dengan Pilar Bulan lahirmu (甲戌). Etos kerja dan energi profesionalmu bersinar.','己卯':'✦ Resonansi dengan Pilar Tahun lahirmu (己卯). Tema identitas dan asal-muasal hidupmu muncul kembali.'};
+
+const REF=new Date(1999,9,9);
+function getPillar(d){
+  const local=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  const days=Math.round((local-REF)/86400000);
+  return{si:((0+days)%10+10)%10,bi:((6+days)%12+12)%12};
+}
+
+function elClass(el){return{Kayu:'el-wood',Api:'el-fire',Tanah:'el-earth',Logam:'el-metal',Air:'el-water'}[el]||'el-earth';}
+function scoreLbl(n){
+  if(n>=9)return'✨ Hari luar biasa — ambil peluang sekarang!';
+  if(n>=7)return'🌟 Energi menguntungkan — manfaatkan sebaik mungkin';
+  if(n>=5)return'⚖️ Hari cukup seimbang — jalani dengan sadar';
+  if(n>=3)return'🌧️ Perlu kehati-hatian — sabar dan waspada';
+  return'🌑 Hari penuh tantangan — bertahan dan jaga energi';
+}
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+
+function showHome(){
+  const now=new Date();
+  document.getElementById('home-date').textContent=now.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'}).toUpperCase();
+  const{si,bi}=getPillar(now);
+  document.getElementById('btn-sub').textContent=`Hari ini: ${STEMS[si]}${BRANCHES[bi]} \u00b7 ${STEM_META[si][1]} / ${BRANCH_META[bi][2]}`;
+  show('screen-home');
+}
+
+function toggleChart(){
+  const btn=document.querySelector('.ct-btn');
+  const c=document.querySelector('.ct-content');
+  btn.classList.toggle('open');
+  c.classList.toggle('open');
+}
+
+function showReading(){
+  const now=new Date();
+  document.getElementById('read-date').textContent=now.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const{si,bi}=getPillar(now);
+  const key=STEMS[si]+BRANCHES[bi];
+  const d=D[si];
+  const sc=Math.min(10,Math.max(1,Math.round(d.score+BSM[bi])));
+  const ecS=elClass(STEM_META[si][1]);
+  const ecB=elClass(BRANCH_META[bi][2]);
+  const avoidHtml=d.avoid.map(a=>`<li><div class="avoid-dot">&#10005;</div><span>${a}</span></li>`).join('');
+  const hoursHtml=d.hours.map(h=>`<div class="hour-item${h.best?' best':''}"><div class="hour-time">${h.time}</div><div class="hour-act">${h.label} &mdash; ${h.act}</div></div>`).join('');
+
+  document.getElementById('rbody').innerHTML=`
+    <div class="p-hero rv">
+      <div class="p-hero-lbl">&#x2726; &nbsp; PILAR HARI INI &nbsp; &#x2726;</div>
+      ${SP[key]?`<div class="special-badge">${SP[key]}</div>`:''}
+      <div class="p-chars">
+        <div class="pc"><div class="big">${STEMS[si]}</div><div class="lbl">${STEM_META[si][0]} &middot; ${STEM_META[si][1]}</div></div>
+        <div class="pc-sep">&middot;</div>
+        <div class="pc"><div class="big">${BRANCHES[bi]}</div><div class="lbl">${BRANCH_META[bi][0]} &middot; ${BRANCH_META[bi][1]}</div></div>
+      </div>
+      <div><span class="el-pill ${ecS}">${STEM_META[si][1]}</span><span class="el-pill ${ecB}">${BRANCH_META[bi][2]}</span></div>
+      <span class="ten-god-badge">${STEM_META[si][3]} &middot; ${STEM_META[si][4]}</span>
+      <div style="font-size:16px;line-height:1.78;color:var(--dim);font-style:italic">${d.energy}</div>
+      <div class="why-box"><div class="why-lbl">&#x2726; Mengapa Energinya Seperti Ini?</div><p>${d.why}</p></div>
+      <div class="branch-note">${BN[bi]}</div>
+    </div>
+
+    <div class="score-row rv">
+      <div class="score-n">${sc}<sub>/10</sub></div>
+      <div class="score-r">
+        <div class="score-tag">Skor Keberuntungan Hari Ini</div>
+        <div class="bar-track"><div class="bar-fill" id="bar"></div></div>
+        <div class="score-desc">${scoreLbl(sc)}</div>
+      </div>
+    </div>
+
+    <div class="dual rv">
+      <div class="half half-h"><div class="half-ttl">&#127754; Harmoni</div><p>${d.harmony}</p></div>
+      <div class="half half-c"><div class="half-ttl">&#9889; Konflik</div><p>${d.conflict}</p></div>
+    </div>
+
+    <div class="section-divider rv"><span>Aspek Kehidupan</span></div>
+
+    <div class="rcard rv">
+      <div class="rcard-head"><span class="ico">&#128188;</span><span class="ttl">Karir &amp; Pekerjaan</span></div>
+      <div class="rcard-body">
+        <p class="section-intro" style="margin-bottom:0">${d.career}</p>
+                <button class="sub-toggle" onclick="toggleSub(this)">
+          <span class="st-ico">🗂️</span>
+          <span class="st-lbl">Rincian Detail</span>
+          <span class="st-count">4 poin</span>
+          <span class="st-arr">&#9662;</span>
+        </button>
+        <div class="sub-body">
+          <div class="sub-inner">
+            <div class="detail-grid">${buildSectionGrid(GD[si].career)}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rcard rv">
+      <div class="rcard-head"><span class="ico">&#127807;</span><span class="ttl">Kesehatan &amp; Energi Tubuh</span></div>
+      <div class="rcard-body">
+        <p class="section-intro" style="margin-bottom:0">${d.health}</p>
+                <button class="sub-toggle" onclick="toggleSub(this)">
+          <span class="st-ico">🌿</span>
+          <span class="st-lbl">Rincian Detail</span>
+          <span class="st-count">4 poin</span>
+          <span class="st-arr">&#9662;</span>
+        </button>
+        <div class="sub-body">
+          <div class="sub-inner">
+            <div class="detail-grid">${buildSectionGrid(GD[si].health)}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rcard rv">
+      <div class="rcard-head"><span class="ico">&#128176;</span><span class="ttl">Finansial &amp; Rezeki</span></div>
+      <div class="rcard-body">
+        <p class="section-intro" style="margin-bottom:0">${d.finance}</p>
+                <button class="sub-toggle" onclick="toggleSub(this)">
+          <span class="st-ico">💰</span>
+          <span class="st-lbl">Rincian Detail</span>
+          <span class="st-count">4 poin</span>
+          <span class="st-arr">&#9662;</span>
+        </button>
+        <div class="sub-body">
+          <div class="sub-inner">
+            <div class="detail-grid">${buildSectionGrid(GD[si].finance)}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rcard rv">
+      <div class="rcard-head"><span class="ico">&#10084;&#65039;</span><span class="ttl">Relasi &amp; Asmara</span></div>
+      <div class="rcard-body">
+        <p class="section-intro" style="margin-bottom:0">${d.romance}</p>
+                <button class="sub-toggle" onclick="toggleSub(this)">
+          <span class="st-ico">✨</span>
+          <span class="st-lbl">Rincian Detail</span>
+          <span class="st-count">4 poin</span>
+          <span class="st-arr">&#9662;</span>
+        </button>
+        <div class="sub-body">
+          <div class="sub-inner">
+            <div class="detail-grid">${buildSectionGrid(GD[si].romance)}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider rv"><span>Panduan Harian</span></div>
+
+    <div class="rcard rv">
+      <div class="rcard-head"><span class="ico">&#9200;</span><span class="ttl">Jam Terbaik Hari Ini</span></div>
+      <div class="rcard-body">
+        <div class="hours-grid">${hoursHtml}</div>
+        <p style="font-size:12px;color:var(--dim);font-style:italic;margin-top:2px">&#x2726; = jam paling direkomendasikan</p>
+      </div>
+    </div>
+
+    <div class="rcard rv">
+      <div class="rcard-head"><span class="ico">&#128683;</span><span class="ttl">Yang Harus Dihindari</span></div>
+      <div class="rcard-body"><ul class="avoid-list">${avoidHtml}</ul></div>
+    </div>
+
+    <div class="affirm-box rv">
+      <div class="affirm-lbl">&#x2726; Mantra &amp; Afirmasi Hari Ini &#x2726;</div>
+      <div class="affirm-text">${d.affirmation}</div>
+    </div>
+
+    <div class="lp-card rv">
+      <div class="lp-head"><span class="ico">&#127744;</span><span class="ttl">Konteks Luck Pillar Aktif</span></div>
+      <div class="lp-body">
+        <div class="lp-row">
+          <div class="lp-hanzi">&#36763;&#26410;</div>
+          <div class="lp-meta"><h3>Yin Metal &middot; Goat</h3><p>&#27491;&#23448; Direct Officer &middot; aktif sejak usia 26</p></div>
+        </div>
+        <div style="font-size:15px;line-height:1.78;color:var(--text)">${d.lpContext}</div>
+        <div class="lp-tags">
+          <span class="lp-tag hot">Metal mengontrol Wood</span>
+          <span class="lp-tag hot">Fase Struktur &amp; Karir</span>
+          <span class="lp-tag">&#26410; mengandung &#24049; Wealth</span>
+          <span class="lp-tag">&#26410; mengandung &#19969; Output</span>
+          <span class="lp-tag">Nobleman Star aktif</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-toggle rv">
+      <button class="ct-btn" onclick="toggleChart()">
+        <span class="ico">&#127963;&#65039;</span>
+        <span class="ttl">Chart Kelahiran &middot; Referensi</span>
+        <span class="arr">&#9662;</span>
+      </button>
+      <div class="ct-content">
+        <div class="pm-grid">
+          <div class="pm"><div class="pm-l">JAM</div><div class="pm-s">&#20057;</div><div class="pm-b">&#20847;</div><div class="pm-n">Yin Wood Pig</div></div>
+          <div class="pm" style="border-color:#c8953a50"><div class="pm-l">HARI &#x2726;</div><div class="pm-s" style="color:var(--gh)">&#30000;</div><div class="pm-b">&#21320;</div><div class="pm-n">Yang Wood Horse</div></div>
+          <div class="pm"><div class="pm-l">BULAN</div><div class="pm-s">&#30000;</div><div class="pm-b">&#25915;</div><div class="pm-n">Yang Wood Dog</div></div>
+          <div class="pm"><div class="pm-l">TAHUN</div><div class="pm-s">&#24049;</div><div class="pm-b">&#21342;</div><div class="pm-n">Yin Earth Rabbit</div></div>
+        </div>
+        <div class="chart-note">Day Master &#30000; Yang Wood &middot; Lahir 9 Oktober 1999 &middot; 21:40 &middot; Kua 1<br>
+        Lucky: Api &#128293; &amp; Tanah &#127758; &middot; Unfavorable: Kayu &#127807; &amp; Air &#128167;<br>
+        Stars: Nobleman (&#19985;&#26410;), Academic (&#24041;), Sword (&#21342;), Peach Blossom (&#21320;), Prosperity (&#23490;)</div>
+      </div>
+    </div>`;
+
+  show('screen-reading');
+  document.querySelectorAll('.rv').forEach((el,i)=>setTimeout(()=>el.classList.add('in'),55+i*65));
+  setTimeout(()=>{const b=document.getElementById('bar');if(b)b.style.width=(sc/10*100)+'%';},300);
+}
+
+if('serviceWorker' in navigator)
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+showHome();
+
+
+/* ══ ANIMATION ENGINE v2 ════════════════════════ */
+
+/* ── IntersectionObserver: blur-to-sharp ── */
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.05, rootMargin: '0px 0px -30px 0px' });
+
+function observeReveal() {
+  document.querySelectorAll('.rv').forEach(el => {
+    el.classList.remove('in');
+    revealObs.observe(el);
+  });
+}
+
+/* ── Ripple: works on BOTH touch AND mouse ── */
+function spawnRipple(el, x, y) {
+  el.style.position = 'relative';
+  el.style.overflow = 'hidden';
+  const r = document.createElement('div');
+  r.className = 'ripple';
+  const rect = el.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height) * 2.2;
+  r.style.cssText = `
+    position:absolute; border-radius:50%; pointer-events:none;
+    width:${size}px; height:${size}px;
+    left:${x - rect.left - size/2}px;
+    top:${y - rect.top - size/2}px;
+    background:radial-gradient(circle, rgba(200,149,58,.55) 0%, rgba(200,149,58,.15) 40%, transparent 70%);
+    transform:scale(0); animation:rippleOut .8s cubic-bezier(.22,1,.36,1) forwards;
+    z-index:999;
+  `;
+  el.appendChild(r);
+  setTimeout(() => r.remove(), 900);
+}
+
+/* ── Lift + Glow ── */
+function liftEl(el) {
+  el.classList.add('lifted', 'glow-pulse');
+}
+function dropEl(el) {
+  setTimeout(() => el.classList.remove('lifted', 'glow-pulse'), 350);
+}
+
+/* ── Unified pointer handler (touch + mouse) ── */
+const LIFT_SELECTORS = '.rcard,.half,.score-row,.p-hero,.lp-card,.affirm-box,.chart-toggle,.read-btn,.hour-item';
+
+function handlePointerDown(e) {
+  const el = e.target.closest(LIFT_SELECTORS);
+  if (!el) return;
+  const x = e.touches ? e.touches[0].clientX : e.clientX;
+  const y = e.touches ? e.touches[0].clientY : e.clientY;
+  spawnRipple(el, x, y);
+  liftEl(el);
+  const up = () => { dropEl(el); document.removeEventListener('mouseup', up); document.removeEventListener('touchend', up); };
+  document.addEventListener('mouseup', up, {once:true});
+  document.addEventListener('touchend', up, {once:true});
+}
+
+document.addEventListener('mousedown', handlePointerDown, {passive:true});
+document.addEventListener('touchstart', handlePointerDown, {passive:true});
+
+/* ── Mist / Nebula ambient ── */
+function initMist() {
+  const canvas = document.getElementById('mist-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let animId;
+
+  function resize() {
+    canvas.width  = canvas.parentElement.offsetWidth  || 400;
+    canvas.height = canvas.parentElement.offsetHeight || 600;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const blobs = [
+    {x:.2, y:.3, r:160, vx:.0004, vy:.0002, h:38,  a:.10},
+    {x:.8, y:.6, r:200, vx:-.0003, vy:.0004, h:38,  a:.08},
+    {x:.5, y:.5, r:140, vx:.0002, vy:-.0003, h:175, a:.07},
+    {x:.1, y:.8, r:120, vx:.0005, vy:-.0002, h:175, a:.06},
+    {x:.9, y:.2, r:180, vx:-.0002, vy:.0005, h:38,  a:.09},
+  ];
+  let t = 0;
+
+  function draw() {
+    t += .4;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    blobs.forEach((b, i) => {
+      const px = (b.x + Math.sin(t * b.vx * 80 + i) * .12) * canvas.width;
+      const py = (b.y + Math.cos(t * b.vy * 80 + i) * .10) * canvas.height;
+      const pr = b.r * (1 + .08 * Math.sin(t * .015 + i));
+      const g = ctx.createRadialGradient(px, py, 0, px, py, pr);
+      g.addColorStop(0,   `hsla(${b.h},65%,55%,${b.a})`);
+      g.addColorStop(.5,  `hsla(${b.h},65%,45%,${b.a * .5})`);
+      g.addColorStop(1,   `hsla(${b.h},65%,45%,0)`);
+      ctx.beginPath();
+      ctx.arc(px, py, pr, 0, Math.PI * 2);
+      ctx.fillStyle = g;
+      ctx.fill();
+    });
+    animId = requestAnimationFrame(draw);
+  }
+  draw();
+  return () => cancelAnimationFrame(animId);
+}
+
+/* ── Patch screen transitions ── */
+const _sh = showHome;
+showHome = function() {
+  _sh();
+  requestAnimationFrame(initMist);
+};
+const _sr = showReading;
+showReading = function() {
+  _sr();
+  requestAnimationFrame(() => { observeReveal(); animateDgBars(); });
+};
+
+/* ── Boot ── */
+initMist();
+
+
+function buildSectionGrid(cells) {
+  return cells.map(c => {
+    const accCls = {gold:'accent-gold',teal:'accent-teal',red:'accent-red',dim:'accent-dim'}[c.accent||'dim']||'accent-dim';
+    const wideCls = c.wide ? ' wide' : '';
+    const tagHtml = c.tag ? `<span class="dg-tag tag-${c.tag}">${{good:'✓ Baik',warn:'⚠ Waspada',gold:'✦ Peluang',dim:''}[c.tag]||''}</span>` : '';
+    const barHtml = c.bar ? `<div class="dg-bar-wrap"><div class="dg-bar ${c.bar.cls}" style="width:0%" data-pct="${c.bar.pct}"></div></div>` : '';
+    // If raw, txt already contains full HTML (like compass)
+    const bodyHtml = c.raw
+      ? `<div class="dg-txt">${c.txt}</div>`
+      : `<div class="dg-txt">${c.txt}${tagHtml}${barHtml}</div>`;
+    return `<div class="dg-cell ${accCls}${wideCls}">
+      <span class="dg-ico">${c.ico}</span>
+      <span class="dg-lbl">${c.lbl}</span>
+      ${bodyHtml}
+    </div>`;
+  }).join('');
+}
+
+function animateDgBars() {
+  setTimeout(() => {
+    document.querySelectorAll('.dg-bar').forEach(b => {
+      b.style.width = (b.dataset.pct || 0) + '%';
+    });
+  }, 600);
+}
+
+
+/* ══ SUB-ACCORDION TOGGLE ══════════════════════ */
+function toggleSub(btn) {
+  const body = btn.nextElementSibling; // .sub-body
+  const isOpen = btn.classList.contains('open');
+  btn.classList.toggle('open', !isOpen);
+  body.classList.toggle('open', !isOpen);
+  // Animate progress bars on open
+  if (!isOpen) {
+    setTimeout(() => {
+      body.querySelectorAll('.dg-bar').forEach(b => {
+        b.style.width = (b.dataset.pct || 0) + '%';
+      });
+    }, 250);
+    spawnRipple(btn,
+      btn.getBoundingClientRect().left + btn.offsetWidth / 2,
+      btn.getBoundingClientRect().top  + btn.offsetHeight / 2);
+  }
+}
+
+function toggleChart() {
+  const btn = document.querySelector('.ct-btn');
+  const content = document.querySelector('.ct-content');
+  if (!btn || !content) return;
+  const isOpen = btn.classList.contains('open');
+  btn.classList.toggle('open', !isOpen);
+  content.classList.toggle('open', !isOpen);
+}
+
+
+function makeCompass(dir, label, reason) {
+  // dir: 'SE','E','S','N','SW','NE','NW','W'
+  const angles = {N:0,NE:45,E:90,SE:135,S:180,SW:225,W:270,NW:315};
+  const deg = angles[dir] || 0;
+  return `<div class="compass-wrap">
+    <svg class="compass-svg" width="52" height="52" viewBox="0 0 52 52">
+      <circle cx="26" cy="26" r="24" fill="none" stroke="#1c1c38" stroke-width="1.5"/>
+      <circle cx="26" cy="26" r="24" fill="none" stroke="#c8953a" stroke-width="1"
+              stroke-dasharray="3 9" opacity=".4"/>
+      <text x="26" y="9"  text-anchor="middle" font-size="7" fill="#6a4a10" font-family="Cinzel,serif">U</text>
+      <text x="26" y="47" text-anchor="middle" font-size="7" fill="#6a4a10" font-family="Cinzel,serif">S</text>
+      <text x="47" y="29" text-anchor="middle" font-size="7" fill="#6a4a10" font-family="Cinzel,serif">T</text>
+      <text x="5"  y="29" text-anchor="middle" font-size="7" fill="#6a4a10" font-family="Cinzel,serif">B</text>
+      <g transform="rotate(${deg}, 26, 26)">
+        <polygon points="26,5 29,26 26,23 23,26" fill="#c8953a" opacity=".9"/>
+        <polygon points="26,47 29,26 26,29 23,26" fill="#3a3a5a" opacity=".7"/>
+      </g>
+      <circle cx="26" cy="26" r="3" fill="#c8953a"/>
+    </svg>
+    <div class="compass-txt"><strong>${label}</strong><br>${reason}</div>
+  </div>`;
+}
+
+</script>
+</body>
+</html>

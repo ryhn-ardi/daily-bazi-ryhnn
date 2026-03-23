@@ -1,0 +1,19 @@
+{
+  "name": "BaziHarian · 八字",
+  "short_name": "BaziHarian",
+  "description": "Bacaan Bazi Four Pillars harian yang personal dengan AI",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#07070f",
+  "theme_color": "#07070f",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
